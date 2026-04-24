@@ -113,23 +113,9 @@
       <div class="wiring-row"><span class="from">Channel 0 (CH0)</span><span class="to">IN0A / IN0B</span><span class="note">Thumb coil — 2 wire ends, polarity doesn't matter</span></div>
       <div class="wiring-row"><span class="from">Channel 1 (CH1)</span><span class="to">IN1A / IN1B</span><span class="note">Index finger coil</span></div>
       <div class="wiring-row"><span class="from">Channel 2 (CH2)</span><span class="to">IN2A / IN2B</span><span class="note">Middle finger coil</span></div>
-      <div class="wiring-row"><span class="from">Channel 3 (CH3)</span><span class="to">IN3A / IN3B</span><span class="note">MUX output (ulnar + wrist crease via MC74HC4052A)</span></div>
     </div>
-
     <div class="hw-spec-group">
-      <div class="hw-spec-header">⚙️ Arm Xiao → Servo Signals (Direct GPIO)</div>
-      <div class="wiring-row" style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text3); letter-spacing:0.1em; padding:0.5rem 1.6rem; background:var(--surface2);">
-        <span>SERVO</span><span>XIAO PIN</span><span>NOTES</span>
-      </div>
-      <div class="wiring-row"><span class="from">Thumb signal</span><span class="to">D0 / GPIO2</span><span class="note">Orange or yellow wire</span></div>
-      <div class="wiring-row"><span class="from">Index signal</span><span class="to">D1 / GPIO3</span><span class="note">Orange or yellow wire</span></div>
-      <div class="wiring-row"><span class="from">Middle signal</span><span class="to">D2 / GPIO4</span><span class="note">Orange or yellow wire</span></div>
-      <div class="wiring-row"><span class="from">All servos — Power</span><span class="to">External 5V</span><span class="note">⚠ NOT Xiao 5V pin. 3 servos = 500mA+ draw. Will brownout the Xiao.</span></div>
-      <div class="wiring-row"><span class="from">All servos — GND</span><span class="to">Shared GND</span><span class="note">Tie servo GND to Xiao GND — shared common ground</span></div>
-    </div>
-
-    <div class="hw-spec-group">
-      <div class="hw-spec-header">🟢 New Build: PCA9685 I2C Servo Driver</div>
+      <div class="hw-spec-header">🟢  PCA9685 I2C Servo Driver</div>
       <div class="wiring-row" style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text3); letter-spacing:0.1em; padding:0.5rem 1.6rem; background:var(--surface2);">
         <span>ARM XIAO</span><span>PCA9685</span><span>NOTES</span>
       </div>
