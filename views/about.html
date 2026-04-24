@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Smart Glove</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/"><div class="nav-logo-icon">🧤</div>SMART GLOVE</a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/timeline">Timeline</a></li>
+    <li><a href="/hardware">Hardware</a></li>
+    <li><a href="/pipeline">Pipeline</a></li>
+    <li><a href="/ml">ML / AI</a></li>
+    <li><a href="/demo">Demo Guide</a></li>
+    <li><a href="/faq">FAQ</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+  <div class="page-hero">
+    <div class="eyebrow">About the Project</div>
+    <h1 class="page-title">Wearable Gesture Control<br>for Robotic Systems</h1>
+    <p class="page-subtitle">A senior design capstone at NYIT proposing a smart textile glove capable of wirelessly controlling a robotic arm through dynamic hand-gesture recognition.</p>
+  </div>
+  <div class="page-body">
+
+    <div class="about-abstract">
+      This paper presents a proposal for the development of a smart textile glove capable of wirelessly controlling a robotic arm through dynamic hand-gesture recognition. The glove integrates five inductive sensors threaded into the fabric — chosen for their flexibility and durability, allowing placement along fingers without risk of damage from repeated motion. Two Xiao C6 microcontrollers enable wireless communication between the glove and the robotic arm, allowing the user to operate the system through natural hand movements from a safe distance.
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-label">The Problem</div>
+    <h2 class="section-heading">Why This Project Matters</h2>
+    <div class="grid-2" style="margin-top:1.5rem; gap:1.5rem;">
+      <div>
+        <p style="font-size:0.95rem; color:var(--text2); line-height:1.8;">
+          Pharmaceutical research plays an important role in advancing global health, but the process of developing new medicines often exposes scientists to hazardous chemicals and biological agents. Many current robotic arm interfaces rely on controllers or software that are difficult to learn and are not ideal for tasks requiring natural, precise motion.
+        </p>
+        <p style="font-size:0.95rem; color:var(--text2); line-height:1.8; margin-top:1rem;">
+          Our proposed control system aims to be <strong style="color:var(--text)">intuitive, quick to learn, and adaptive</strong> — achieved through a gesture-detecting glove that allows the robotic arm to move at the same speed and direction as the user's hand movements.
+        </p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:1rem;">
+        <div class="card">
+          <span class="card-icon">🏥</span>
+          <h3>Medical Research Application</h3>
+          <p>Enables researchers to safely operate robotic tools from a distance, removing direct exposure to hazardous substances.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">🎯</span>
+          <h3>Intuitive Control</h3>
+          <p>No programming expertise required — natural hand gestures translate directly to robotic actions in real time.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-label">Gestures Defined</div>
+    <h2 class="section-heading">Four Gestures, Four Actions</h2>
+    <table class="data-table" style="margin-top:1.5rem;">
+      <thead>
+        <tr><th>Gesture</th><th>Hand Motion</th><th>Robotic Action</th><th>Sensors Used</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>✋ Rest</td>
+          <td>Hand fully open, all fingers extended</td>
+          <td>Arm stationary — default idle state. All servos hold at 90°.</td>
+          <td>All 5 sensors at baseline</td>
+        </tr>
+        <tr>
+          <td>🤌 Pinch</td>
+          <td>Thumb + index + middle converge together</td>
+          <td>Gripper closes proportionally to pinch intensity (0–100%)</td>
+          <td>Thumb, Index, Middle coils</td>
+        </tr>
+        <tr>
+          <td>↕️ Flexion/Extension</td>
+          <td>Wrist moves upward or downward</td>
+          <td>Elbow joint of the robotic arm moves up or down</td>
+          <td>Wrist crease sensor</td>
+        </tr>
+        <tr>
+          <td>↔️ Adduction</td>
+          <td>Hand rotates left or right (ulnar/radial)</td>
+          <td>Wrist rotation of the robotic arm</td>
+          <td>Ulnar side sensor</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="divider"></div>
+
+    <div class="section-label">The Team</div>
+    <h2 class="section-heading">Team #1 — NYIT EENG 489–491</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">👤</div>
+        <h3>Jonathan Guaman</h3>
+        <div class="role">Group Leader</div>
+        <p>LDC1614 I2C driver development, PCB board integration, data collection sessions, midterm coordination.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">👤</div>
+        <h3>Ali Junaid</h3>
+        <div class="role">ML & Software</div>
+        <p>Machine learning pipeline, data normalization, gesture classification algorithm, training script.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">👤</div>
+        <h3>Cameron Adomako-Adjei</h3>
+        <div class="role">Robotics & Firmware</div>
+        <p>Robotic arm design, finger redesign, arm receiver firmware, servo integration.</p>
+      </div>
+      <div class="team-card" style="border-color:rgba(251,191,36,0.15);">
+        <div class="team-avatar">🎓</div>
+        <h3>Dr. Reza K. Amineh</h3>
+        <div class="role" style="color:var(--gold);">Faculty Advisor</div>
+        <p>Specialist in electromagnetic sensing, microwave systems, and wireless measurement techniques.</p>
+      </div>
+      <div class="team-card" style="border-color:rgba(251,191,36,0.15);">
+        <div class="team-avatar">🎓</div>
+        <h3>Dr. Maryam Ravan</h3>
+        <div class="role" style="color:var(--gold);">Faculty Advisor</div>
+        <p>Specialist in antenna design, signal processing, and electromagnetic wave applications.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div style="text-align:center; color:var(--text2); font-size:0.85rem;">
+      <p><strong style="color:var(--text)">New York Institute of Technology</strong> · Department of Electrical and Computer Engineering</p>
+      <p>School of Engineering and Computing Sciences · Spring 2026</p>
+    </div>
+
+  </div>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

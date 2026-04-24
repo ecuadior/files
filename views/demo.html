@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Guide — Smart Glove</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="/"><div class="nav-logo-icon">🧤</div>SMART GLOVE</a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/timeline">Timeline</a></li>
+    <li><a href="/hardware">Hardware</a></li>
+    <li><a href="/pipeline">Pipeline</a></li>
+    <li><a href="/ml">ML / AI</a></li>
+    <li><a href="/demo">Demo Guide</a></li>
+    <li><a href="/faq">FAQ</a></li>
+  </ul>
+</nav>
+<div class="page-wrapper">
+<div class="page-hero">
+    <div class="eyebrow">Demo Guide</div>
+    <h1 class="page-title">Proof-of-Concept<br>4-Stage Demo</h1>
+    <p class="page-subtitle">A complete walkthrough for demonstrating the system end-to-end — from sensor health check to full wireless pipeline with virtual arm dashboard. No physical robotic arm required.</p>
+  </div>
+  <div class="page-body">
+
+    <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:2.5rem;">
+      <div class="card" style="flex:1; min-width:180px; padding:1.2rem; text-align:center;">
+        <div style="font-family:var(--font-display); font-size:1.8rem; font-weight:800; color:var(--accent);">45–60</div>
+        <div style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text2); letter-spacing:0.1em;">MIN SETUP</div>
+      </div>
+      <div class="card" style="flex:1; min-width:180px; padding:1.2rem; text-align:center;">
+        <div style="font-family:var(--font-display); font-size:1.8rem; font-weight:800; color:var(--accent);">5–10</div>
+        <div style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text2); letter-spacing:0.1em;">MIN RUNTIME</div>
+      </div>
+      <div class="card" style="flex:1; min-width:180px; padding:1.2rem; text-align:center;">
+        <div style="font-family:var(--font-display); font-size:1.8rem; font-weight:800; color:var(--accent);">4</div>
+        <div style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text2); letter-spacing:0.1em;">DEMO STAGES</div>
+      </div>
+      <div class="card" style="flex:1; min-width:180px; padding:1.2rem; text-align:center;">
+        <div style="font-family:var(--font-display); font-size:1.8rem; font-weight:800; color:var(--accent);">2</div>
+        <div style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text2); letter-spacing:0.1em;">XIAO BOARDS</div>
+      </div>
+    </div>
+
+    <div class="section-label">Stage-by-Stage Walkthrough</div>
+    <div style="margin-top:2rem; display:flex; flex-direction:column; gap:2rem;">
+
+      <div class="demo-stage">
+        <div class="demo-num">1</div>
+        <div class="demo-body">
+          <div class="demo-time">~15 MIN · SENSOR HEALTH CHECK</div>
+          <h3>Verify All Channels Are Live</h3>
+          <p>Flash existing LDC firmware. Call <code>RawData()</code> in loop(). Open Serial Monitor at 115200 baud. Verify no channel shows 0, 4294967295, or 268435455 constantly. Bend each finger individually — only that channel should respond. This confirms sensor independence and correct wiring before anything else.</p>
+          <div class="code-block" style="margin-top:1rem; font-size:0.72rem;">
+<span class="cmt">// Expected Serial Monitor output:</span>
+Channel 0: <span class="num">14523891</span>
+Channel 1: <span class="num">11234567</span>
+Channel 2: <span class="num">11892034</span>
+Channel 3: <span class="num">12100456</span></div>
+        </div>
+      </div>
+
+      <div class="demo-stage">
+        <div class="demo-num">2</div>
+        <div class="demo-body">
+          <div class="demo-time">~10 MIN · MATLAB LIVE VISUALIZATION</div>
+          <h3>Show Real-Time Inductance Curves</h3>
+          <p>Switch loop() to call <code>MATLAB()</code>. Run NUMChannelDataCollector.m — set port and numChannels=3. Three live subplots appear. Bend each finger one at a time and demonstrate that only that channel's trace moves. Optionally save REST and PINCH CSV files with NumGesturecollector.m as training data artifacts to show judges.</p>
+          <div class="alert alert-warn">
+            Close the Arduino Serial Monitor before running MATLAB. Only one program can own the COM port at a time. MATLAB will show "Port busy" otherwise.
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-stage">
+        <div class="demo-num">3</div>
+        <div class="demo-body">
+          <div class="demo-time">~15 MIN · ON-DEVICE GESTURE DETECTION</div>
+          <h3>Live Classification on the Glove Xiao</h3>
+          <p>Flash GloveDemo.ino. On startup, calibration runs for 6 seconds — hold hand completely open and flat. After calibration, Serial Monitor shows classification at 10Hz. If PINCH isn't detected when squeezing: check delta values and lower PINCH_THRESHOLD. If REST shows false PINCH: raise threshold or recalibrate.</p>
+          <div class="code-block" style="margin-top:1rem; font-size:0.72rem;">
+<span class="num">62963745</span>,<span class="num">59838582</span>,<span class="num">59853714</span>
+  Thumb:<span class="num">62963745</span> Index:<span class="num">59838582</span> Middle:<span class="num">59853714</span> | GESTURE: <span class="def">REST</span>
+<span class="cmt">← pinch fingers →</span>
+  Thumb:<span class="num">65000000</span> Index:<span class="num">61900000</span> Middle:<span class="num">62500000</span> | GESTURE: <span class="def">PINCH (72%)</span></div>
+        </div>
+      </div>
+
+      <div class="demo-stage">
+        <div class="demo-num">4</div>
+        <div class="demo-body">
+          <div class="demo-time">~15 MIN · WIRELESS END-TO-END + VIRTUAL ARM</div>
+          <h3>Full Pipeline — Two Xiaos, Python Dashboard</h3>
+          <p>Flash ArmReceiver.ino to second Xiao. Note its MAC address from Serial Monitor. Update <code>ARM_XIAO_MAC[]</code> in GloveDemo.ino with that exact MAC. Reflash glove Xiao. Run Python dashboard. Pinch and watch GRIPPER angle move. LED blinks on every packet received. Packet count in dashboard increments continuously.</p>
+          <div class="code-block" style="margin-top:1rem; font-size:0.72rem;">
+<span class="cmt">// Run the Python dashboard:</span>
+python virtual_arm_dashboard.py --port COM6 --source arm
+<span class="cmt">// Single-Xiao fallback:</span>
+python virtual_arm_dashboard.py --port COM5 --source glove</div>
+          <div class="alert alert-info" style="margin-top:0.8rem;">
+            <strong>Single-Xiao fallback:</strong> If only one Xiao is available, run the dashboard directly from the glove Xiao with <code>--source glove</code>. The Python script does gesture detection locally from the CSV stream.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-label">Demo Talk Track</div>
+    <h2 class="section-heading">5 Talking Points for Judges</h2>
+    <table class="data-table" style="margin-top:1.5rem;">
+      <thead><tr><th>#</th><th>Show</th><th>Say</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Point to glove + LDC board</td>
+          <td>Stainless steel inductive threads sewn into each finger. As a finger bends, the inductance changes. The LDC1614 converts those changes into a 28-bit number 10 times per second.</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>MATLAB plot — bend each finger</td>
+          <td>Each subplot is one finger. When I bend just the index, only that channel moves — the others stay flat. That proves our sensors are independent and correctly wired.</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Serial Monitor — REST vs PINCH</td>
+          <td>The last word on each line is the classified gesture. Open hand — REST. Pinch — PINCH, with percent intensity showing how hard I'm squeezing.</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Python dashboard — perform gestures</td>
+          <td>The second Xiao is receiving the gesture wirelessly over ESP-NOW — packet count is incrementing — and it maps the signal to servo angles. GRIPPER is partially closed. Squeeze harder — now it's at 0 degrees.</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Show two CSV files from MATLAB</td>
+          <td>These are the raw inductance readings for REST and PINCH. The values are clearly separated, which is exactly what our ML classifier needs to generalize beyond simple thresholds.</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+<script src="/js/main.js"></script>
+</body>
+</html>

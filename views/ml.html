@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML / AI — Smart Glove</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="/"><div class="nav-logo-icon">🧤</div>SMART GLOVE</a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/timeline">Timeline</a></li>
+    <li><a href="/hardware">Hardware</a></li>
+    <li><a href="/pipeline">Pipeline</a></li>
+    <li><a href="/ml">ML / AI</a></li>
+    <li><a href="/demo">Demo Guide</a></li>
+    <li><a href="/faq">FAQ</a></li>
+  </ul>
+</nav>
+<div class="page-wrapper">
+<div class="page-hero">
+    <div class="eyebrow">Machine Learning</div>
+    <h1 class="page-title">On-Device Neural<br>Network Inference</h1>
+    <p class="page-subtitle">A 314-parameter feedforward neural network — trained in Python, exported as a C++ header, and running entirely on the Xiao ESP32-C6 with no external library.</p>
+  </div>
+  <div class="page-body">
+
+    <div class="section-label">Why Upgrade from Thresholds?</div>
+    <div class="compare-grid">
+      <div class="compare-card neg">
+        <div class="compare-header">⚠ THRESHOLD DETECTION (CURRENT)</div>
+        <div class="compare-item"><div class="compare-dot"></div>Requires manual re-tuning for every user — hand size and glove fit vary session to session</div>
+        <div class="compare-item"><div class="compare-dot"></div>Only REST and PINCH — adding more gestures means more hardcoded if/else rules</div>
+        <div class="compare-item"><div class="compare-dot"></div>Binary output — finger is either bent or not, no nuance for proportional control</div>
+        <div class="compare-item"><div class="compare-dot"></div>Breaks if glove shifts even slightly during a session</div>
+        <div class="compare-item"><div class="compare-dot"></div>PINCH_THRESHOLD is a magic number from trial and error</div>
+      </div>
+      <div class="compare-card pos">
+        <div class="compare-header">✓ NEURAL NETWORK (ML UPGRADE)</div>
+        <div class="compare-item"><div class="compare-dot"></div>Learns user-specific patterns — generalizes to new sessions automatically</div>
+        <div class="compare-item"><div class="compare-dot"></div>Scales to any number of gestures by adding training data and one constant</div>
+        <div class="compare-item"><div class="compare-dot"></div>Continuous confidence score (0–100%) enables smooth, proportional arm control</div>
+        <div class="compare-item"><div class="compare-dot"></div>Captures temporal patterns across 1.5s window — robust to glove drift</div>
+        <div class="compare-item"><div class="compare-dot"></div>Validated on held-out data — known, measurable accuracy metric</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ARCHITECTURE -->
+    <div class="section-label">Network Architecture</div>
+    <h2 class="section-heading">9 → 16 → 8 → 2 Feedforward Network</h2>
+
+    <div class="nn-visual">
+      <div class="nn-col">
+        <div class="nn-label">INPUT<br>9 features</div>
+        <div class="nn-node input"></div><div class="nn-node input"></div>
+        <div class="nn-node input"></div><div class="nn-node input"></div>
+        <div class="nn-node input"></div><div class="nn-node input"></div>
+        <div class="nn-node input"></div><div class="nn-node input"></div>
+        <div class="nn-node input"></div>
+      </div>
+      <div class="nn-gap"></div>
+      <div class="nn-col">
+        <div class="nn-label">HIDDEN 1<br>16 neurons (ReLU)</div>
+        <div class="nn-node h1"></div><div class="nn-node h1"></div>
+        <div class="nn-node h1"></div><div class="nn-node h1"></div>
+        <div class="nn-node h1"></div><div class="nn-node h1"></div>
+        <div class="nn-node h1"></div><div class="nn-node h1"></div>
+        <div class="nn-node h1"></div><div class="nn-node h1"></div>
+        <div class="nn-node h1"></div><div class="nn-node h1"></div>
+        <div class="nn-node h1"></div><div class="nn-node h1"></div>
+        <div class="nn-node h1"></div><div class="nn-node h1"></div>
+      </div>
+      <div class="nn-gap"></div>
+      <div class="nn-col">
+        <div class="nn-label">HIDDEN 2<br>8 neurons (ReLU)</div>
+        <div class="nn-node h2"></div><div class="nn-node h2"></div>
+        <div class="nn-node h2"></div><div class="nn-node h2"></div>
+        <div class="nn-node h2"></div><div class="nn-node h2"></div>
+        <div class="nn-node h2"></div><div class="nn-node h2"></div>
+      </div>
+      <div class="nn-gap"></div>
+      <div class="nn-col">
+        <div class="nn-label">OUTPUT<br>2 classes (Softmax)</div>
+        <div class="nn-node out"></div>
+        <div class="nn-node out"></div>
+        <div style="font-family:var(--font-mono); font-size:0.6rem; color:var(--text2); margin-top:0.5rem; text-align:center;">REST<br>PINCH</div>
+      </div>
+    </div>
+
+    <div class="grid-3" style="margin-top:1.5rem;">
+      <div class="card">
+        <span class="card-icon">📐</span>
+        <h3>9 Input Features</h3>
+        <p>3 features × 3 channels extracted over a 15-sample (1.5 second) sliding window: <strong style="color:var(--text)">mean</strong> (sustained level), <strong style="color:var(--text)">std deviation</strong> (fluctuation / activity), <strong style="color:var(--text)">slope</strong> (is the finger moving?).</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">⚡</span>
+        <h3>314 Parameters</h3>
+        <p>9×16+16 + 16×8+8 + 8×2+2 = 314 total weights and biases. Flash footprint: ~1.3 KB. Inference time: <strong style="color:var(--text)">&lt;1 ms</strong> at 160 MHz RISC-V.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🎯</span>
+        <h3>Softmax Output</h3>
+        <p>P(PINCH) = 0.87 means 87% confident it's a pinch. This value is used <strong style="color:var(--text)">directly as pinch intensity</strong> — squeezing harder produces more extreme features and higher confidence.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- TRAINING PIPELINE -->
+    <div class="section-label">Training Pipeline</div>
+    <h2 class="section-heading">5-Step Process: Data to Device</h2>
+    <div class="grid-2" style="margin-top:1.5rem; gap:3rem;">
+      <div>
+        <div class="pipe-flow">
+          <div class="pipe-step">
+            <div class="pipe-icon">📋</div>
+            <div class="pipe-content">
+              <h3>1 — Collect Data (MATLAB)</h3>
+              <p>Run NumGesturecollector.m. Sound cue → hold REST for 10s → CSV saved. Repeat for PINCH. Aim for 3–5 sessions per gesture at different wrist angles.</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon">🔬</div>
+            <div class="pipe-content">
+              <h3>2 — Extract Features (Python)</h3>
+              <p>Sliding window (size=15, step=5). Per channel: compute mean, std, linear slope. Output: 9 features per window. Apply StandardScaler normalization.</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon">🏋️</div>
+            <div class="pipe-content">
+              <h3>3 — Train (TensorFlow/Keras)</h3>
+              <p>Adam optimizer, lr=0.005. Up to 120 epochs with EarlyStopping. 80/20 train/test split. Target: &gt;85% val accuracy. Current model: 100% on collected data.</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon">📄</div>
+            <div class="pipe-content">
+              <h3>4 — Export Weights (C++ Header)</h3>
+              <p>All 314 weights + biases + normalization params written to <code>gesture_model_weights.h</code>. No TFLite needed — forward pass is just float multiplications.</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon">📟</div>
+            <div class="pipe-content">
+              <h3>5 — Deploy to Xiao</h3>
+              <p>Copy .h file into GloveDemoML/ folder. Flash GloveDemoML.ino. Window fills after 1.5s (~15 samples). Inference every 0.5s. Output: <code>NN: PINCH conf=0.87</code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Normalization Parameters</div>
+        <div class="code-block" style="margin-top:1rem; font-size:0.72rem;">
+<span class="cmt">// Generated by train_gesture_model.py</span>
+<span class="cmt">// Feature order: ch0_mean, ch0_std, ch0_slope,</span>
+<span class="cmt">//                ch1_mean, ch1_std, ch1_slope,</span>
+<span class="cmt">//                ch2_mean, ch2_std, ch2_slope</span>
+
+<span class="tag">Mean:</span>
+  CH0: <span class="num">12,343,541</span> | <span class="num">24,044</span>  | <span class="num">10,344</span>
+  CH1: <span class="num">11,910,744</span> | <span class="num">24,314</span>  | <span class="num">12,429</span>
+  CH2: <span class="num">12,182,202</span> | <span class="num">25,444</span>  | <span class="num">11,559</span>
+
+<span class="tag">Scale (std dev):</span>
+  CH0: <span class="num">412,569</span>    | <span class="num">11,920</span>  | <span class="num">12,467</span>
+  CH1: <span class="num">486,553</span>    | <span class="num">12,943</span>  | <span class="num">14,627</span>
+  CH2: <span class="num">454,900</span>    | <span class="num">11,783</span>  | <span class="num">14,041</span></div>
+
+        <div style="margin-top:1.5rem;">
+          <div class="section-label">On-Device Forward Pass</div>
+          <div class="code-block" style="font-size:0.72rem;">
+<span class="cmt">// From GloveDemoML.ino — no library needed</span>
+<span class="kw">for</span> (o = <span class="num">0</span>; o < GM_HIDDEN1; o++) {
+  <span class="kw">float</span> acc = gm_b1[o];
+  <span class="kw">for</span> (i = <span class="num">0</span>; i < GM_N_FEATURES; i++)
+    acc += gm_w1[o * <span class="num">9</span> + i] * x_norm[i];
+  h1[o] = <span class="fn">relu</span>(acc);  <span class="cmt">// ReLU activation</span>
+}
+<span class="cmt">// Repeat for Layer 2, then Softmax output</span>
+<span class="cmt">// Total: &lt;1ms per inference at 160MHz</span></div>
+        </div>
+
+        <div class="alert alert-info" style="margin-top:1.5rem;">
+          <strong>Fallback mode:</strong> If no CSV files are provided, <code>train_gesture_model.py</code> automatically generates synthetic training data and trains on it. The demo will still work, but accuracy will be lower than with real sensor data.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="/js/main.js"></script>
+</body>
+</html>

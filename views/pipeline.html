@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pipeline — Smart Glove</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="/"><div class="nav-logo-icon">🧤</div>SMART GLOVE</a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/timeline">Timeline</a></li>
+    <li><a href="/hardware">Hardware</a></li>
+    <li><a href="/pipeline">Pipeline</a></li>
+    <li><a href="/ml">ML / AI</a></li>
+    <li><a href="/demo">Demo Guide</a></li>
+    <li><a href="/faq">FAQ</a></li>
+  </ul>
+</nav>
+<div class="page-wrapper">
+<div class="page-hero">
+    <div class="eyebrow">System Pipeline</div>
+    <h1 class="page-title">Data Flow:<br>Bend to Move</h1>
+    <p class="page-subtitle">Every step from a finger bending to a servo responding — hardware, firmware, wireless protocol, and gesture logic explained.</p>
+  </div>
+  <div class="page-body">
+
+    <div class="grid-2" style="margin-top:0; gap:3rem;">
+      <div>
+        <div class="section-label">Full Signal Chain</div>
+        <div class="pipe-flow" style="margin-top:2rem;">
+          <div class="pipe-step">
+            <div class="pipe-icon">🧤</div>
+            <div class="pipe-content">
+              <h3>Glove Coil</h3>
+              <p>Conductive thread coil changes magnetic inductance as the finger bends. Inductance shift is proportional to the degree of bend.</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon">📊</div>
+            <div class="pipe-content">
+              <h3>LDC1614EVM</h3>
+              <p>Converts LC resonant frequency to a 28-bit integer at 10Hz. Four channels scanned in sequence. I2C at 0x2A. Error values (4294967295, 268435455) are filtered out using the last good value.</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon">🔵</div>
+            <div class="pipe-content">
+              <h3>Glove Xiao — Classification</h3>
+              <p>Auto-calibrates at startup (60 samples / 6 seconds). Computes delta from rest baseline per channel. 2-of-3 bent fingers = PINCH. Intensity = average delta as % of threshold sum. Outputs MATLAB CSV + human-readable status line.</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon">📶</div>
+            <div class="pipe-content">
+              <h3>ESP-NOW Wireless</h3>
+              <p>11-byte packet sent to arm Xiao MAC address. Contains gesture (REST/PINCH), intensity (0–100%), and raw CH0/CH1/CH2 values. Latency under 5ms. Both boards must be on the same WiFi channel.</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon">🔵</div>
+            <div class="pipe-content">
+              <h3>Arm Xiao — Servo Control</h3>
+              <p>Maps intensity to servo angle: 0% = 90° open, 100% = 0° closed. Smooth 1°/4ms steps prevent stall/jerk. LED blinks on each received packet. Prints machine-readable line for Python dashboard.</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon">⚙️</div>
+            <div class="pipe-content">
+              <h3>Servos</h3>
+              <p>Three SG90/MG90S servos move proportionally to pinch intensity. In the new build, the PCA9685 I2C driver controls them via <code>angleToPulse()</code> mapping (0–180° → SERVOMIN–SERVOMAX).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Gesture Detection Math</div>
+        <div style="margin-top:2rem; display:flex; flex-direction:column; gap:1.5rem;">
+          <div class="card">
+            <h3>Step 1 — Calibration</h3>
+            <p style="margin-bottom:0.8rem;">60 samples taken at startup with hand open and flat. Average = rest baseline per channel.</p>
+            <div class="code-block" style="font-size:0.72rem;">
+rest_0 = avg(CH0 samples during 6s)
+rest_1 = avg(CH1 samples during 6s)
+rest_2 = avg(CH2 samples during 6s)
+<span class="cmt">// If good samples &lt; 10 → calibration fails</span></div>
+          </div>
+          <div class="card">
+            <h3>Step 2 — Delta Calculation</h3>
+            <p style="margin-bottom:0.8rem;">Every loop, compute deviation from baseline.</p>
+            <div class="code-block" style="font-size:0.72rem;">
+d0 = CH0 − rest_0   <span class="cmt">// Thumb delta</span>
+d1 = CH1 − rest_1   <span class="cmt">// Index delta</span>
+d2 = CH2 − rest_2   <span class="cmt">// Middle delta</span></div>
+          </div>
+          <div class="card">
+            <h3>Step 3 — PINCH Classification</h3>
+            <p style="margin-bottom:0.8rem;">2-of-3 rule: any two channels above threshold = PINCH.</p>
+            <div class="code-block" style="font-size:0.72rem;">
+<span class="kw">if</span> abs(d0) > <span class="num">2,000,000</span> → bent++
+<span class="kw">if</span> abs(d1) > <span class="num">1,000,000</span> → bent++
+<span class="kw">if</span> abs(d2) > <span class="num">2,000,000</span> → bent++
+<span class="kw">if</span> bent >= <span class="num">2</span> → <span class="def">PINCH DETECTED</span></div>
+          </div>
+          <div class="card">
+            <h3>Step 4 — Intensity → Servo Angle</h3>
+            <p style="margin-bottom:0.8rem;">Continuous proportional control for smooth gripper motion.</p>
+            <div class="code-block" style="font-size:0.72rem;">
+avgDelta = (|d0| + |d1| + |d2|) / 3
+intensity = avgDelta × 100 / sum_of_thresholds
+
+<span class="cmt">// Map to servo angle:</span>
+angle = map(intensity, 0, 100, 90°, 0°)
+<span class="cmt">// 0% pinch = 90° open</span>
+<span class="cmt">// 100% pinch = 0° closed</span></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-label">ESP-NOW Packet Structure</div>
+        <div class="card" style="margin-top:1rem;">
+          <h3>GesturePacket — 11 bytes</h3>
+          <div class="code-block" style="margin-top:0.8rem; font-size:0.72rem;">
+<span class="kw">typedef struct</span> <span class="def">GesturePacket</span> {
+  uint8_t  gesture;    <span class="cmt">// 0=REST, 1=PINCH</span>
+  uint8_t  intensity;  <span class="cmt">// 0..100 (%)</span>
+  uint32_t ch0;        <span class="cmt">// Raw thumb reading</span>
+  uint32_t ch1;        <span class="cmt">// Raw index reading</span>
+  uint32_t ch2;        <span class="cmt">// Raw middle reading</span>
+} <span class="def">GesturePacket</span>;               <span class="cmt">// Total: 11 bytes</span></div>
+        </div>
+
+        <div style="margin-top:1.5rem;">
+          <div class="section-label">Servo Response Table</div>
+          <table class="data-table" style="margin-top:0.5rem;">
+            <thead><tr><th>Hand State</th><th>Gesture Output</th><th>Servo Angle</th></tr></thead>
+            <tbody>
+              <tr><td>Fully open</td><td><span class="badge badge-blue">REST · 0%</span></td><td><code>90°</code> open</td></tr>
+              <tr><td>Light pinch</td><td><span class="badge badge-green">PINCH · 30%</span></td><td><code>~63°</code> partial</td></tr>
+              <tr><td>Medium pinch</td><td><span class="badge badge-green">PINCH · 60%</span></td><td><code>~36°</code></td></tr>
+              <tr><td>Full pinch</td><td><span class="badge badge-orange">PINCH · 100%</span></td><td><code>0°</code> closed</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="/js/main.js"></script>
+</body>
+</html>

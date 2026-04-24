@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hardware — Smart Glove</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="/"><div class="nav-logo-icon">🧤</div>SMART GLOVE</a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/timeline">Timeline</a></li>
+    <li><a href="/hardware">Hardware</a></li>
+    <li><a href="/pipeline">Pipeline</a></li>
+    <li><a href="/ml">ML / AI</a></li>
+    <li><a href="/demo">Demo Guide</a></li>
+    <li><a href="/faq">FAQ</a></li>
+  </ul>
+</nav>
+<div class="page-wrapper">
+<div class="page-hero">
+    <div class="eyebrow">Hardware</div>
+    <h1 class="page-title">Components,<br>Wiring & Specs</h1>
+    <p class="page-subtitle">Every piece of hardware in the system — from conductive thread coils to the PCA9685 servo driver — with full wiring tables and calibration data.</p>
+  </div>
+  <div class="page-body">
+
+    <!-- PARTS LIST -->
+    <div class="section-label">Parts List</div>
+    <h2 class="section-heading">Bill of Materials</h2>
+    <table class="data-table" style="margin-top:1.5rem;">
+      <thead>
+        <tr><th>Component</th><th>Qty</th><th>Notes</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Seeed Studio Xiao ESP32-C6</td><td>2</td><td>One glove-side, one arm-side. RISC-V 160MHz.</td><td><span class="badge badge-green">In Hand</span></td></tr>
+        <tr><td>Texas Instruments LDC1614EVM</td><td>1</td><td>4-channel inductance-to-digital converter eval board. I2C address 0x2A.</td><td><span class="badge badge-green">In Hand</span></td></tr>
+        <tr><td>Smart Glove with conductive thread coils</td><td>1</td><td>Custom-sewn. 5 coil sensors: thumb, index, middle, ulnar, wrist.</td><td><span class="badge badge-green">In Hand</span></td></tr>
+        <tr><td>SG90 / MG90S Hobby Servos</td><td>3</td><td>One per finger. 4.8–6V, 50Hz PWM, 500–2400µs pulse.</td><td><span class="badge badge-green">In Hand</span></td></tr>
+        <tr><td>External 5V power supply</td><td>1</td><td>Required for servo rail — never power from Xiao 5V pin.</td><td><span class="badge badge-green">Required</span></td></tr>
+        <tr><td>PCA9685 PWM Driver</td><td>1</td><td>I2C servo controller at 0x40. 16 channels. Used in new arm build.</td><td><span class="badge badge-green">In Hand</span></td></tr>
+        <tr><td>MC74HC4052A MUX</td><td>1</td><td>Dual 4:1 analog MUX — routes 5th sensor through LDC Channel 3.</td><td><span class="badge badge-orange">Shipping</span></td></tr>
+        <tr><td>470µH Inductors</td><td>6+</td><td>Two per finger in series for signal stabilization.</td><td><span class="badge badge-green">In Hand</span></td></tr>
+        <tr><td>USB-C cables (data + power)</td><td>2</td><td>For programming both Xiaos simultaneously.</td><td><span class="badge badge-green">In Hand</span></td></tr>
+        <tr><td>Jumper wires (F-F)</td><td>8+</td><td>Dupont connectors for LDC and servo connections.</td><td><span class="badge badge-green">In Hand</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="divider"></div>
+
+    <!-- SENSOR DESIGN -->
+    <div class="section-label">Inductive Sensor Design</div>
+    <h2 class="section-heading">Conductive Thread Coils</h2>
+    <div class="grid-2" style="margin-top:1.5rem; gap:1.5rem;">
+      <div>
+        <p style="font-size:0.9rem; color:var(--text2); line-height:1.8; margin-bottom:1rem;">
+          Each inductive sensor is made from stainless steel conductive thread sewn into the glove fabric. As a finger bends, the distance between the coil and a metal reference changes — causing a measurable shift in the coil's magnetic inductance.
+        </p>
+        <p style="font-size:0.9rem; color:var(--text2); line-height:1.8; margin-bottom:1rem;">
+          Sensors are positioned along the finger from the MCP (metacarpophalangeal) to DIP (distal interphalangeal) joint. Each coil has two wire ends connected to INxA and INxB on the LDC1614EVM — polarity does not matter.
+        </p>
+        <div class="alert alert-info">
+          <strong>Inductor configuration:</strong> Two 470µH inductors connected in series per finger. Initially one was used — adding a second produced significantly cleaner, more stable data with less noise. A finger bending causes a moderate decrease in frequency, not an extreme drop.
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:1rem;">
+        <div class="card">
+          <h3>Coil Geometry</h3>
+          <table class="data-table" style="margin-top:0.5rem;">
+            <tbody>
+              <tr><td>Loops per coil</td><td>3–5 minimum</td></tr>
+              <tr><td>Loop spacing (s)</td><td>~2mm (smaller = stronger signal)</td></tr>
+              <tr><td>Thread material</td><td>Stainless steel conductive thread</td></tr>
+              <tr><td>Wire connection</td><td>Beginning and end of coil to INxA/INxB</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Sensor Locations</h3>
+          <table class="data-table" style="margin-top:0.5rem;">
+            <tbody>
+              <tr><td>CH0</td><td>Thumb — pinch detection</td></tr>
+              <tr><td>CH1</td><td>Index finger — pinch detection</td></tr>
+              <tr><td>CH2</td><td>Middle finger — pinch detection</td></tr>
+              <tr><td>CH3 (via MUX)</td><td>Ulnar + Wrist crease</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- WIRING -->
+    <div class="section-label">Wiring Reference</div>
+    <h2 class="section-heading">Complete Connection Tables</h2>
+
+    <div class="hw-spec-group" style="margin-top:1.5rem;">
+      <div class="hw-spec-header">🔵 Glove Xiao ESP32-C6 → LDC1614EVM</div>
+      <div class="wiring-row" style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text3); letter-spacing:0.1em; padding:0.5rem 1.6rem; background:var(--surface2);">
+        <span>XIAO PIN</span><span>LDC PIN</span><span>NOTES</span>
+      </div>
+      <div class="wiring-row"><span class="from">3V3</span><span class="to">VIN</span><span class="note">3.3V power — NEVER use 5V pin (will damage LDC)</span></div>
+      <div class="wiring-row"><span class="from">GND</span><span class="to">GND</span><span class="note">Common ground</span></div>
+      <div class="wiring-row"><span class="from">D4 / GPIO21</span><span class="to">SDA</span><span class="note">Blue wire — I2C data line</span></div>
+      <div class="wiring-row"><span class="from">D5 / GPIO23</span><span class="to">SCL</span><span class="note">Green wire — I2C clock line</span></div>
+      <div class="wiring-row"><span class="from">—</span><span class="to">ADDR</span><span class="note">Already tied to GND internally on EVM board. No wire needed. I2C address = 0x2A.</span></div>
+    </div>
+
+    <div class="hw-spec-group">
+      <div class="hw-spec-header">🟡 LDC1614EVM → Coil Sensors</div>
+      <div class="wiring-row" style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text3); letter-spacing:0.1em; padding:0.5rem 1.6rem; background:var(--surface2);">
+        <span>CHANNEL</span><span>EVM PINS</span><span>SENSOR</span>
+      </div>
+      <div class="wiring-row"><span class="from">Channel 0 (CH0)</span><span class="to">IN0A / IN0B</span><span class="note">Thumb coil — 2 wire ends, polarity doesn't matter</span></div>
+      <div class="wiring-row"><span class="from">Channel 1 (CH1)</span><span class="to">IN1A / IN1B</span><span class="note">Index finger coil</span></div>
+      <div class="wiring-row"><span class="from">Channel 2 (CH2)</span><span class="to">IN2A / IN2B</span><span class="note">Middle finger coil</span></div>
+      <div class="wiring-row"><span class="from">Channel 3 (CH3)</span><span class="to">IN3A / IN3B</span><span class="note">MUX output (ulnar + wrist crease via MC74HC4052A)</span></div>
+    </div>
+
+    <div class="hw-spec-group">
+      <div class="hw-spec-header">⚙️ Arm Xiao → Servo Signals (Direct GPIO)</div>
+      <div class="wiring-row" style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text3); letter-spacing:0.1em; padding:0.5rem 1.6rem; background:var(--surface2);">
+        <span>SERVO</span><span>XIAO PIN</span><span>NOTES</span>
+      </div>
+      <div class="wiring-row"><span class="from">Thumb signal</span><span class="to">D0 / GPIO2</span><span class="note">Orange or yellow wire</span></div>
+      <div class="wiring-row"><span class="from">Index signal</span><span class="to">D1 / GPIO3</span><span class="note">Orange or yellow wire</span></div>
+      <div class="wiring-row"><span class="from">Middle signal</span><span class="to">D2 / GPIO4</span><span class="note">Orange or yellow wire</span></div>
+      <div class="wiring-row"><span class="from">All servos — Power</span><span class="to">External 5V</span><span class="note">⚠ NOT Xiao 5V pin. 3 servos = 500mA+ draw. Will brownout the Xiao.</span></div>
+      <div class="wiring-row"><span class="from">All servos — GND</span><span class="to">Shared GND</span><span class="note">Tie servo GND to Xiao GND — shared common ground</span></div>
+    </div>
+
+    <div class="hw-spec-group">
+      <div class="hw-spec-header">🟢 New Build: PCA9685 I2C Servo Driver</div>
+      <div class="wiring-row" style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text3); letter-spacing:0.1em; padding:0.5rem 1.6rem; background:var(--surface2);">
+        <span>ARM XIAO</span><span>PCA9685</span><span>NOTES</span>
+      </div>
+      <div class="wiring-row"><span class="from">3V3</span><span class="to">VCC</span><span class="note">3.3V logic power</span></div>
+      <div class="wiring-row"><span class="from">GND</span><span class="to">GND</span><span class="note">Common ground</span></div>
+      <div class="wiring-row"><span class="from">D4 / SDA</span><span class="to">SDA</span><span class="note">I2C data — address 0x40</span></div>
+      <div class="wiring-row"><span class="from">D5 / SCL</span><span class="to">SCL</span><span class="note">I2C clock — setPWMFreq(50) required</span></div>
+      <div class="wiring-row"><span class="from">CH0 → Servo</span><span class="to">SERVO_THUMB_CH</span><span class="note">Thumb servo on PCA9685 channel 0</span></div>
+      <div class="wiring-row"><span class="from">CH1 → Servo</span><span class="to">SERVO_INDEX_CH</span><span class="note">Index servo on PCA9685 channel 1</span></div>
+      <div class="wiring-row"><span class="from">CH2 → Servo</span><span class="to">SERVO_MIDDLE_CH</span><span class="note">Middle servo on PCA9685 channel 2</span></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- CALIBRATION DATA -->
+    <div class="section-label">Measured Calibration Data</div>
+    <h2 class="section-heading">Sensor Baselines from Lab Sessions</h2>
+    <p style="color:var(--text2); font-size:0.875rem; margin-bottom:1.5rem;">Collected via PCB board using sound-cued sessions. 10 sessions × 10 seconds each for both REST and PINCH.</p>
+    <table class="data-table">
+      <thead>
+        <tr><th>Sensor</th><th>Rest Baseline</th><th>Spread (±)</th><th>Pinch Norm. Value</th><th>Threshold Used</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Thumb (CH0)</td>
+          <td>~4.231 × 10⁶ Hz</td>
+          <td>3.300 × 10⁵ Hz</td>
+          <td>−0.5070</td>
+          <td><code>−0.35</code></td>
+        </tr>
+        <tr>
+          <td>Index (CH1)</td>
+          <td>~1.470 × 10⁶ Hz</td>
+          <td>1.798 × 10⁵ Hz</td>
+          <td>−2.0603</td>
+          <td><code>−1.5</code></td>
+        </tr>
+        <tr>
+          <td>Middle (CH2)</td>
+          <td>~28.79 × 10⁶ Hz</td>
+          <td>2.190 × 10⁵ Hz</td>
+          <td>−2.4459</td>
+          <td><code>−1.8</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-info" style="margin-top:1.5rem;">
+      <strong>Note on internal oscillator:</strong> With CONFIG = <code>0x1401</code> (internal oscillator mode), typical resting channel values are in the 59–63 million counts range. Values of 10–15 million only appear with an external clock source and are NOT normal for this build. If all channels read 0 or 4294967295, the CONFIG register likely has <code>0x16</code> instead of <code>0x14</code>.
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-label">Quick Reference</div>
+    <h2 class="section-heading">Key Parameters</h2>
+    <table class="data-table" style="margin-top:1.5rem;">
+      <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>LDC1614 I2C Address</td><td><code>0x2A</code></td></tr>
+        <tr><td>CONFIG register</td><td><code>writeConfig(0x2A, 0x1A, 0x14, 0x01)</code> — internal oscillator</td></tr>
+        <tr><td>Error values to filter</td><td><code>4294967295</code> and <code>268435455</code></td></tr>
+        <tr><td>Servo REST angle</td><td>90° (finger open / gripper open)</td></tr>
+        <tr><td>Servo CLOSED angle</td><td>0° (finger bent / gripper closed)</td></tr>
+        <tr><td>Servo PWM frequency</td><td>50 Hz</td></tr>
+        <tr><td>Servo pulse range</td><td>500–2400 µs (covers SG90 / MG90S)</td></tr>
+        <tr><td>Sampling rate</td><td>10 Hz (100ms loop delay)</td></tr>
+        <tr><td>Serial baud rate</td><td>115200</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+<script src="/js/main.js"></script>
+</body>
+</html>

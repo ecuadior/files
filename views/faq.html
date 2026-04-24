@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ — Smart Glove</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="/"><div class="nav-logo-icon">🧤</div>SMART GLOVE</a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/timeline">Timeline</a></li>
+    <li><a href="/hardware">Hardware</a></li>
+    <li><a href="/pipeline">Pipeline</a></li>
+    <li><a href="/ml">ML / AI</a></li>
+    <li><a href="/demo">Demo Guide</a></li>
+    <li><a href="/faq">FAQ</a></li>
+  </ul>
+</nav>
+<div class="page-wrapper">
+<div class="page-hero">
+    <div class="eyebrow">FAQ & Troubleshooting</div>
+    <h1 class="page-title">Common Questions<br>& Fixes</h1>
+    <p class="page-subtitle">Answers to the most common questions about the hardware, firmware, ML pipeline, and demo setup. If it's gone wrong before, it's probably here.</p>
+  </div>
+  <div class="page-body">
+
+    <div class="section-label" style="margin-bottom:0.5rem;">Hardware & Sensors</div>
+    <div style="margin-bottom:3rem;">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          All channels read 0 or 4294967295 — what's wrong?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          This is almost always a CONFIG register issue. Find the line <code>writeConfig(LDC_ADDR, 0x1A, 0x16, 0x01)</code> and change <code>0x16</code> to <code>0x14</code>. The value 0x16 enables external-clock mode — the chip waits for an external oscillator that isn't present and outputs zeros indefinitely. After changing, reflash the firmware. If channels still read 4294967295, a specific coil is open-circuit — check the solder joint at the sensor wire ends and confirm the coil wires are seated in both INxA and INxB.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          One channel is always 0 but the others work fine.
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          That specific coil's wires are not seated properly in the EVM terminals. Push them firmly into INxA and INxB on the EVM board. Also check that both wire ends of the coil are connected — each coil needs two connections, one to INxA and one to INxB. If wires look fine, inspect the coil itself for a break in the conductive thread.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Bending a finger causes no change in that channel's reading.
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          The coil may not be close enough to a metal surface inside the glove, or the coil geometry needs adjustment. Ensure there is a metal target (foil or metal object) inside the finger and the coil can sense it. Also verify the coil has at least 3–5 loops with ~2mm spacing — fewer loops or wider spacing weakens the signal dramatically. Two 470µH inductors in series per finger significantly improves signal quality.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Why does the ADDR pin on the LDC1614EVM need no wire?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          The LDC1614EVM evaluation board has the ADDR pin already tied to GND internally via an onboard resistor on the PCB. This sets the I2C address to 0x2A automatically. You do not need to run an external wire from GND to ADDR — it is already done for you. If you add an external wire, you risk creating a ground loop. Trust the EVM board's design.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          The Xiao resets mid-demo when the servos move.
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          Three servos moving simultaneously can draw 500mA or more, which brownouts the Xiao's onboard 5V regulator and causes a reset. Never power all three servos from the Xiao's 5V pin. Use an external 5V power supply (a phone charger with a breakout, a bench supply, or a USB power bank). Connect the GND of the external supply to the same GND rail as the Xiao — a shared common ground is essential.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-bottom:0.5rem;">Gesture Detection</div>
+    <div style="margin-bottom:3rem;">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          PINCH is never detected even when I squeeze hard.
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          PINCH_THRESHOLD is set too high for your glove. Open Serial Monitor and note the channel values at rest. Then pinch fully and note the new values. The difference between those two numbers is your signal range. Set PINCH_THRESHOLD for each channel to about 30–40% of that delta. For the index finger (CH1), the threshold is already lower at 1,000,000 — try 500,000 if still not detecting. Also make sure calibration ran correctly — the baselines may be off if the hand wasn't flat during the 6-second countdown.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          PINCH shows constantly even when my hand is completely open.
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          Two possibilities: (1) PINCH_THRESHOLD is too low — raise it. Try doubling the current value. (2) Calibration ran while the hand was not fully open, so the baselines are captured incorrectly. Reflash the firmware — the auto-calibration runs fresh on every upload. During the 6-second calibration countdown, hold the hand as flat and relaxed as possible on a table surface.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          The gesture always shows PINCH at 100% immediately after flashing.
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          Calibration ran before the sensors were outputting valid data — the baselines were captured as zero, so every subsequent reading looks like a huge delta. Reflash the firmware and wait for the Serial Monitor to show the calibration message. Then hold the glove open and flat for the full 6-second countdown before doing anything else.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-bottom:0.5rem;">Wireless & Demo</div>
+    <div style="margin-bottom:3rem;">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          The ARM Xiao LED is not blinking — no packets received.
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          Check the MAC address entered in GloveDemo.ino. Open the ARM Serial Monitor and find the exact MAC printed on the "ARM MAC ADDRESS" line. Copy it character-for-character into the ARM_XIAO_MAC array as hex bytes. Both boards must be powered simultaneously. As a quick diagnostic, temporarily set ARM_XIAO_MAC to {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF} (broadcast) — this always works and confirms the ESP-NOW link is functional. Then switch back to the specific MAC once confirmed.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          MATLAB shows "Port busy" or no data.
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          The Arduino Serial Monitor is still open and holding the COM port. Close it completely before launching MATLAB. Only one program can own a COM port at any given time. Also verify the port = "COMx" value in NUMChannelDataCollector.m matches the actual COM port assigned to your glove Xiao — check Windows Device Manager (Ports section) or run serialportlist in the MATLAB command window.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Python says "No module named serial" or dashboard doesn't start.
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          Run <code>pip install pyserial</code> in a terminal (on macOS use <code>pip3</code>). Also install <code>matplotlib</code> and <code>numpy</code> if not already present. If Python can't find the COM port automatically, pass it explicitly: <code>python virtual_arm_dashboard.py --port COM6 --source arm</code>. Replace COM6 with your actual arm Xiao port number.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-bottom:0.5rem;">Arduino & Firmware</div>
+    <div style="margin-bottom:3rem;">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          XIAO_ESP32C6 doesn't appear in Tools > Board, even after installing the Seeed package.
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          You likely installed "Seeed nRF52 Boards" instead of "Seeed ESP32 Boards." In Boards Manager, uninstall any nRF52 package. Make sure the correct URL is in Settings → Additional boards manager URLs: <code>https://files.seeedstudio.com/arduino/package_seeeduino_boards_index.json</code>. Then search "Seeed ESP32" and install "Seeed ESP32 Boards" by Seeed Studio. Restart Arduino IDE and try again.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Compile error: "duplicate setup() or loop()" or "GesturePacket redefinition."
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          ArmReceiver.ino is in the same folder as GloveDemo.ino. Arduino compiles all .ino files in a folder together. Move ArmReceiver.ino into its own subfolder: GloveDemo/ArmReceiver/ArmReceiver.ino. Open it as a separate sketch by navigating into that subfolder in Arduino IDE. Never open it from the GloveDemo root folder.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Compile error: "ESP32Servo.h not found."
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          Install the ESP32Servo library: Arduino IDE → Tools → Library Manager → search "ESP32Servo" → install the entry by Kevin Harrington & John K. Bennett. Do NOT install the generic "Servo" library — it does not support the ESP32-C6. Only the ESP32Servo library (by Kevin Harrington) works correctly with this board.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          On macOS: "pip: command not found" and Preferences not under File menu.
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          On macOS, use <code>pip3</code> instead of <code>pip</code> for all Python package installations. For Arduino IDE Settings on macOS, click "Arduino IDE" in the top-left menu bar (next to the Apple logo) and choose Settings — it is NOT under the File menu like on Windows.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-bottom:0.5rem;">Machine Learning</div>
+    <div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          The NN always outputs REST no matter what gesture I do.
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          The gesture_model_weights.h file was not found by the sketch — it's using placeholder zero weights. Confirm the file is in the same folder as GloveDemoML.ino (not in a parent or sibling folder). Re-run the training script to regenerate the file, then copy it fresh into the correct location. Also check that the #include path in the sketch matches the filename exactly.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How much training data do I actually need?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          Even 1 session per gesture class (about 100 samples at 10Hz = 10 seconds of recording) is enough to get a functional demo. The training script warns you if data seems sparse. For better accuracy, aim for 3–5 sessions per gesture at different wrist angles. The model improves automatically — just add more CSV paths to DATA_FILES and re-run the training script.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I add more gestures beyond REST and PINCH?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          Yes. Add label 2, 3, etc. in DATA_FILES with your new gesture CSVs. Change GM_N_CLASSES to match the total number of gesture classes. Change the output layer size in build_model() to match. The on-device C++ forward pass just reads GM_N_CLASSES — it propagates automatically. You'll also need to update GloveDemoML.ino to handle the additional output indices.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="/js/main.js"></script>
+</body>
+</html>

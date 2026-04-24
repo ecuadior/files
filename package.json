@@ -1,0 +1,19 @@
+{
+  "name": "smart-glove-site",
+  "version": "1.0.0",
+  "description": "NYIT Senior Design Team #1 — Smart Glove Project Website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.22.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
