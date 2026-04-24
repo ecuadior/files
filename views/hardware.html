@@ -43,8 +43,6 @@
         <tr><td>SG90 / MG90S Hobby Servos</td><td>3</td><td>One per finger. 4.8–6V, 50Hz PWM, 500–2400µs pulse.</td><td><span class="badge badge-green">In Hand</span></td></tr>
         <tr><td>External 5V power supply</td><td>1</td><td>Required for servo rail — never power from Xiao 5V pin.</td><td><span class="badge badge-green">Required</span></td></tr>
         <tr><td>PCA9685 PWM Driver</td><td>1</td><td>I2C servo controller at 0x40. 16 channels. Used in new arm build.</td><td><span class="badge badge-green">In Hand</span></td></tr>
-        <tr><td>MC74HC4052A MUX</td><td>1</td><td>Dual 4:1 analog MUX — routes 5th sensor through LDC Channel 3.</td><td><span class="badge badge-orange">Shipping</span></td></tr>
-        <tr><td>470µH Inductors</td><td>6+</td><td>Two per finger in series for signal stabilization.</td><td><span class="badge badge-green">In Hand</span></td></tr>
         <tr><td>USB-C cables (data + power)</td><td>2</td><td>For programming both Xiaos simultaneously.</td><td><span class="badge badge-green">In Hand</span></td></tr>
         <tr><td>Jumper wires (F-F)</td><td>8+</td><td>Dupont connectors for LDC and servo connections.</td><td><span class="badge badge-green">In Hand</span></td></tr>
       </tbody>
@@ -63,9 +61,6 @@
         <p style="font-size:0.9rem; color:var(--text2); line-height:1.8; margin-bottom:1rem;">
           Sensors are positioned along the finger from the MCP (metacarpophalangeal) to DIP (distal interphalangeal) joint. Each coil has two wire ends connected to INxA and INxB on the LDC1614EVM — polarity does not matter.
         </p>
-        <div class="alert alert-info">
-          <strong>Inductor configuration:</strong> Two 470µH inductors connected in series per finger. Initially one was used — adding a second produced significantly cleaner, more stable data with less noise. A finger bending causes a moderate decrease in frequency, not an extreme drop.
-        </div>
       </div>
       <div style="display:flex; flex-direction:column; gap:1rem;">
         <div class="card">
@@ -86,7 +81,6 @@
               <tr><td>CH0</td><td>Thumb — pinch detection</td></tr>
               <tr><td>CH1</td><td>Index finger — pinch detection</td></tr>
               <tr><td>CH2</td><td>Middle finger — pinch detection</td></tr>
-              <tr><td>CH3 (via MUX)</td><td>Ulnar + Wrist crease</td></tr>
             </tbody>
           </table>
         </div>

@@ -65,7 +65,7 @@
     <div class="divider"></div>
 
     <div class="section-label">Gestures Defined</div>
-    <h2 class="section-heading">Four Gestures, Four Actions</h2>
+    <h2 class="section-heading">Two Gestures & Actions</h2>
     <table class="data-table" style="margin-top:1.5rem;">
       <thead>
         <tr><th>Gesture</th><th>Hand Motion</th><th>Robotic Action</th><th>Sensors Used</th></tr>
@@ -75,25 +75,13 @@
           <td>✋ Rest</td>
           <td>Hand fully open, all fingers extended</td>
           <td>Arm stationary — default idle state. All servos hold at 90°.</td>
-          <td>All 5 sensors at baseline</td>
+          <td>All 3 sensors at baseline</td>
         </tr>
         <tr>
           <td>🤌 Pinch</td>
           <td>Thumb + index + middle converge together</td>
           <td>Gripper closes proportionally to pinch intensity (0–100%)</td>
           <td>Thumb, Index, Middle coils</td>
-        </tr>
-        <tr>
-          <td>↕️ Flexion/Extension</td>
-          <td>Wrist moves upward or downward</td>
-          <td>Elbow joint of the robotic arm moves up or down</td>
-          <td>Wrist crease sensor</td>
-        </tr>
-        <tr>
-          <td>↔️ Adduction</td>
-          <td>Hand rotates left or right (ulnar/radial)</td>
-          <td>Wrist rotation of the robotic arm</td>
-          <td>Ulnar side sensor</td>
         </tr>
       </tbody>
     </table>
