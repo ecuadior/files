@@ -30,25 +30,119 @@
   <div class="page-body">
 
     <!-- PARTS LIST -->
-    <div class="section-label">Parts List</div>
-    <h2 class="section-heading">Bill of Materials</h2>
-    <table class="data-table" style="margin-top:1.5rem;">
-      <thead>
-        <tr><th>Component</th><th>Qty</th><th>Notes</th><th>Status</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Seeed Studio Xiao ESP32-C6</td><td>2</td><td>One glove-side, one arm-side. RISC-V 160MHz.</td><td><span class="badge badge-green">In Hand</span></td></tr>
-        <tr><td>Texas Instruments LDC1614EVM</td><td>1</td><td>4-channel inductance-to-digital converter eval board. I2C address 0x2A.</td><td><span class="badge badge-green">In Hand</span></td></tr>
-        <tr><td>Smart Glove with conductive thread coils</td><td>1</td><td>Custom-sewn. 5 coil sensors: thumb, index, middle, ulnar, wrist.</td><td><span class="badge badge-green">In Hand</span></td></tr>
-        <tr><td>SG90 / MG90S Hobby Servos</td><td>3</td><td>One per finger. 4.8–6V, 50Hz PWM, 500–2400µs pulse.</td><td><span class="badge badge-green">In Hand</span></td></tr>
-        <tr><td>External 5V power supply</td><td>1</td><td>Required for servo rail — never power from Xiao 5V pin.</td><td><span class="badge badge-green">Required</span></td></tr>
-        <tr><td>PCA9685 PWM Driver</td><td>1</td><td>I2C servo controller at 0x40. 16 channels. Used in new arm build.</td><td><span class="badge badge-green">In Hand</span></td></tr>
-        <tr><td>USB-C cables (data + power)</td><td>2</td><td>For programming both Xiaos simultaneously.</td><td><span class="badge badge-green">In Hand</span></td></tr>
-        <tr><td>Jumper wires (F-F)</td><td>8+</td><td>Dupont connectors for LDC and servo connections.</td><td><span class="badge badge-green">In Hand</span></td></tr>
-      </tbody>
-    </table>
+<div class="section-label">Parts List</div>
+<h2 class="section-heading">Bill of Materials</h2>
 
-    <div class="divider"></div>
+<div class="bom-grid">
+
+  <!-- ── COMPONENT CARD 1 ── -->
+  <div class="bom-card">
+    <div class="bom-img-wrap">
+      <img src="/images/xiaoc6.png" alt="Seeed Studio Xiao ESP32-C6" class="bom-img">
+    </div>
+    <div class="bom-info">
+      <div class="bom-name">Seeed Studio Xiao ESP32-C6</div>
+      <div class="bom-meta">
+        <span class="bom-qty">Qty: 2</span>
+        <span class="badge badge-green">In Hand</span>
+      </div>
+      <p class="bom-notes">One glove-side, one arm-side. RISC-V 160MHz. Handles I2C, ESP-NOW wireless, and servo control.</p>
+    </div>
+  </div>
+
+  <!-- ── COMPONENT CARD 2 ── -->
+  <div class="bom-card">
+    <div class="bom-img-wrap">
+      <img src="/images/ldc1614.png" alt="TI LDC1614EVM" class="bom-img">
+    </div>
+    <div class="bom-info">
+      <div class="bom-name">Texas Instruments LDC1614EVM</div>
+      <div class="bom-meta">
+        <span class="bom-qty">Qty: 1</span>
+        <span class="badge badge-green">In Hand</span>
+      </div>
+      <p class="bom-notes">4-channel inductance-to-digital converter eval board. I2C address 0x2A. Onboard capacitors per channel.</p>
+    </div>
+  </div>
+
+  <!-- ── COMPONENT CARD 3 ── -->
+  <div class="bom-card">
+    <div class="bom-img-wrap">
+      <img src="/images/glove.png" alt="Smart Glove" class="bom-img">
+    </div>
+    <div class="bom-info">
+      <div class="bom-name">Smart Glove with Conductive Thread Coils</div>
+      <div class="bom-meta">
+        <span class="bom-qty">Qty: 1</span>
+        <span class="badge badge-green">In Hand</span>
+      </div>
+      <p class="bom-notes">Custom-sewn. 3 inductive coil sensors: thumb, index, middle.</p>
+    </div>
+  </div>
+
+  <!-- ── COMPONENT CARD 4 ── -->
+  <div class="bom-card">
+    <div class="bom-img-wrap">
+      <img src="/images/servo.png" alt="SG90 Servo" class="bom-img">
+    </div>
+    <div class="bom-info">
+      <div class="bom-name">SG90 / MG90S Hobby Servos</div>
+      <div class="bom-meta">
+        <span class="bom-qty">Qty: 3</span>
+        <span class="badge badge-green">In Hand</span>
+      </div>
+      <p class="bom-notes">One per finger. 4.8–6V, 50Hz PWM, 500–2400µs pulse range. External 5V power required.</p>
+    </div>
+  </div>
+
+  <!-- ── COMPONENT CARD 5 ── -->
+  <div class="bom-card">
+    <div class="bom-img-wrap">
+      <img src="/images/pca9685.png" alt="PCA9685 PWM Driver" class="bom-img">
+    </div>
+    <div class="bom-info">
+      <div class="bom-name">PCA9685 PWM Driver</div>
+      <div class="bom-meta">
+        <span class="bom-qty">Qty: 1</span>
+        <span class="badge badge-green">In Hand</span>
+      </div>
+      <p class="bom-notes">I2C servo controller at address 0x40. 16 PWM channels. Used in new arm build for cleaner servo control.</p>
+    </div>
+  </div>
+
+  <!-- ── COMPONENT CARD 6 ── -->
+  <div class="bom-card">
+    <div class="bom-img-wrap">
+      <img src="/images/usbc.png" alt="USB-C Cables" class="bom-img">
+    </div>
+    <div class="bom-info">
+      <div class="bom-name">USB-C Cables (data + power)</div>
+      <div class="bom-meta">
+        <span class="bom-qty">Qty: 2</span>
+        <span class="badge badge-green">In Hand</span>
+      </div>
+      <p class="bom-notes">For programming both Xiaos simultaneously. Must support data transfer, not charge-only.</p>
+    </div>
+  </div>
+
+  <!-- ── COMPONENT CARD 7 ── -->
+  <div class="bom-card">
+    <div class="bom-img-wrap">
+      <img src="/images/jumpers.png" alt="Jumper Wires" class="bom-img">
+    </div>
+    <div class="bom-info">
+      <div class="bom-name">Jumper Wires (F-F)</div>
+      <div class="bom-meta">
+        <span class="bom-qty">Qty: 8+</span>
+        <span class="badge badge-green">In Hand</span>
+      </div>
+      <p class="bom-notes">Dupont female-to-female connectors for all LDC and servo connections.</p>
+    </div>
+  </div>
+
+</div><!-- end .bom-grid -->
+
+<div class="divider"></div>
 
     <!-- SENSOR DESIGN -->
     <div class="section-label">Inductive Sensor Design</div>
