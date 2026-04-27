@@ -978,3 +978,28 @@ code {
   line-height: 1.6;
   border-top: 1px solid var(--border);
 }
+/* Hardware page hero with background image */
+.hardware-hero {
+  position: relative;
+  background-image: url('/images/LDCboard.png');
+  /* Replace hardware-hero.jpg with your image filename */
+  background-size: cover;
+  background-position: center;
+  min-height: 320px;
+}
+
+.hero-bg-overlay {
+  position: absolute;
+  inset: 0;
+  /* Dark overlay so text stays readable over the image */
+  background: linear-gradient(
+    to right,
+    rgba(8, 9, 13, 0.92) 40%,
+    rgba(8, 9, 13, 0.55) 100%
+  );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
