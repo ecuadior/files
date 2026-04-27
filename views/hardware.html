@@ -68,7 +68,7 @@
   <!-- ── COMPONENT CARD 3 ── -->
   <div class="bom-card">
     <div class="bom-img-wrap">
-      <img src="/images/glove.png" alt="Smart Glove" class="bom-img">
+      <img src="/images/glove.jpg" alt="Smart Glove" class="bom-img">
     </div>
     <div class="bom-info">
       <div class="bom-name">Smart Glove with Conductive Thread Coils</div>
@@ -185,7 +185,44 @@
 
     <!-- WIRING -->
     <div class="section-label">Wiring Reference</div>
-    <h2 class="section-heading">Complete Connection Tables</h2>
+<h2 class="section-heading">Complete Connection Tables</h2>
+
+<!-- SCHEMATICS -->
+<div class="schematic-grid">
+
+  <!-- ── SCHEMATIC 1: Glove Side ── -->
+  <div class="schematic-wrap">
+    <div class="schematic-header">
+      <span class="schematic-label">Glove Side</span>
+      <span class="badge badge-blue">Xiao ESP32-C6 → LDC1614EVM</span>
+    </div>
+    <img
+      src="/images/glove schematic.png"
+      alt="Glove schematic — Xiao ESP32-C6 to LDC1614EVM"
+      class="schematic-img"
+    >
+    <p class="schematic-caption">
+      Glove Xiao ESP32-C6 → LDC1614EVM (I2C: SDA/SCL) → 3 inductive coil sensors on channels CH0–CH2
+    </p>
+  </div>
+
+  <!-- ── SCHEMATIC 2: Arm Side ── -->
+  <div class="schematic-wrap">
+    <div class="schematic-header">
+      <span class="schematic-label">Robotic Arm Side</span>
+      <span class="badge badge-green">Xiao ESP32-C6 → PCA9685 → Servos</span>
+    </div>
+    <img
+      src="/images/arm schematic.png"
+      alt="Arm schematic — Xiao ESP32-C6 to PCA9685 to servo motors"
+      class="schematic-img"
+    >
+    <p class="schematic-caption">
+      Arm Xiao ESP32-C6 → PCA9685 PWM Driver (I2C: 0x40) → 3× SG90/MG90S servo motors. External 5V servo rail required.
+    </p>
+  </div>
+
+</div><!-- end .schematic-grid -->
 
     <div class="hw-spec-group" style="margin-top:1.5rem;">
       <div class="hw-spec-header">🔵 Glove Xiao ESP32-C6 → LDC1614EVM</div>

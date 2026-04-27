@@ -921,3 +921,60 @@ code {
   line-height: 1.65;
   margin: 0;
 }
+/* Schematic grid — two side by side */
+.schematic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin: 1.5rem 0 2rem;
+}
+
+@media (max-width: 800px) {
+  .schematic-grid { grid-template-columns: 1fr; }
+}
+
+.schematic-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+
+.schematic-wrap:hover {
+  border-color: rgba(79, 255, 176, 0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.schematic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.4rem;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+.schematic-label {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.schematic-img {
+  width: 100%;
+  display: block;
+  mix-blend-mode: lighten;
+}
+
+.schematic-caption {
+  padding: 0.8rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  color: var(--text3);
+  letter-spacing: 0.07em;
+  line-height: 1.6;
+  border-top: 1px solid var(--border);
+}
