@@ -38,6 +38,10 @@ app.get("/demo", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "demo.html"));
 });
 
+app.get("/data", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "data.html"));
+});
+
 app.get("/faq", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "faq.html"));
 });
@@ -58,5 +62,6 @@ app.listen(PORT, () => {
   console.log("  /pipeline  → System Pipeline");
   console.log("  /ml        → ML / AI");
   console.log("  /demo      → Demo Guide");
+   console.log("  /data      → Data");
   console.log("  /faq       → FAQ & Troubleshooting\n");
 });

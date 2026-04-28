@@ -18,6 +18,7 @@
     <li><a href="/pipeline">Pipeline</a></li>
     <li><a href="/ml">ML / AI</a></li>
     <li><a href="/demo">Demo Guide</a></li>
+    <li><a href="/data">Data</a></li>
     <li><a href="/faq">FAQ</a></li>
   </ul>
 </nav>
@@ -27,119 +28,264 @@
     <h1 class="page-title">From Proposal<br>to Final Demo</h1>
     <p class="page-subtitle">A semester-by-semester breakdown of milestones, accomplishments, and upcoming deliverables for the Smart Glove project.</p>
   </div>
-  <div class="page-body">
+ <div class="page-body">
 
-    <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:2.5rem;">
-      <span class="badge badge-green">● Completed</span>
-      <span class="badge badge-gold">● In Progress</span>
-      <span class="badge" style="background:var(--surface); color:var(--text2); border-color:var(--border2);">○ Upcoming</span>
-    </div>
-
-    <div class="timeline">
-
-      <div class="timeline-item completed">
-        <div class="timeline-date">FALL 2025 — EENG 489</div>
-        <h3>Project Proposal & Initial Research <span class="badge badge-green">✓ Done</span></h3>
-        <p>Team formation, project scope definition, literature review on inductive sensing and gesture-controlled robotics. Initial component selection and budget planning.</p>
-        <div class="timeline-details">
-          <div class="timeline-detail">Submitted capstone proposal — Smart Glove for pharmaceutical lab remote control</div>
-          <div class="timeline-detail">Identified LDC1614EVM as the inductance-to-digital converter</div>
-          <div class="timeline-detail">Defined 4 target gestures: Rest, Pinch, Flexion/Extension, Adduction</div>
-          <div class="timeline-detail">Selected Seeed Xiao ESP32-C6 for both glove and arm microcontrollers</div>
-        </div>
-      </div>
-
-      <div class="timeline-item completed">
-        <div class="timeline-date">FALL 2025 — EENG 489</div>
-        <h3>Glove Fabrication & Sensor Design <span class="badge badge-green">✓ Done</span></h3>
-        <p>Construction of the physical glove with sewn conductive thread coils. Sensor placement based on anatomical joint positions.</p>
-        <div class="timeline-details">
-          <div class="timeline-detail">5 inductive coil sensors sewn: thumb, index, middle, ulnar, wrist crease</div>
-          <div class="timeline-detail">Coil design: 3–5 loops per sensor, ~2mm loop spacing for max inductance</div>
-          <div class="timeline-detail">Sensor placement spans from MCP to DIP joints for full range motion capture</div>
-          <div class="timeline-detail">Tested single-thread vs. stitched multi-segment coils for signal integrity</div>
-        </div>
-      </div>
-
-      <div class="timeline-item completed">
-        <div class="timeline-date">FALL 2025 / SPRING 2026</div>
-        <h3>LDC1614 I2C Driver & PCB Integration <span class="badge badge-green">✓ Done</span></h3>
-        <p>Wrote the low-level I2C driver for the LDC1614EVM. Configured all 4 channels and debugged the CONFIG register issue that caused all-zero outputs.</p>
-        <div class="timeline-details">
-          <div class="timeline-detail">Identified critical CONFIG bug: 0x16 (external clock) vs 0x14 (internal) — solved all-zero channel issue</div>
-          <div class="timeline-detail">All 4 channels reading in 59–63 million counts range at rest (internal oscillator)</div>
-          <div class="timeline-detail">I2C address confirmed at 0x2A — ADDR pin tied internally to GND on EVM</div>
-          <div class="timeline-detail">Wiring standard: D4/GPIO21 = SDA (blue), D5/GPIO23 = SCL (green)</div>
-        </div>
-      </div>
-
-      <div class="timeline-item completed">
-        <div class="timeline-date">SPRING 2026 — Week 7</div>
-        <h3>Data Collection & Calibration <span class="badge badge-green">✓ Done</span></h3>
-        <p>Systematic collection of REST and PINCH gesture data using sound-cued sessions. Inductor configuration optimized for clean signals.</p>
-        <div class="timeline-details">
-          <div class="timeline-detail">Tested single 470µH inductor per finger → switched to two in series for cleaner data</div>
-          <div class="timeline-detail">REST baselines: Thumb ~4.231MHz, Index ~1.470MHz, Middle ~28.79MHz</div>
-          <div class="timeline-detail">Spread values measured: Thumb 3.30×10⁵, Index 1.80×10⁵, Middle 2.19×10⁵ Hz</div>
-          <div class="timeline-detail">10 sessions × 10 seconds each for both REST and PINCH gestures</div>
-          <div class="timeline-detail">Normalized pinch values: Thumb −0.507, Index −2.060, Middle −2.446</div>
-        </div>
-      </div>
-
-      <div class="timeline-item completed">
-        <div class="timeline-date">SPRING 2026</div>
-        <h3>ML Pipeline & Neural Network Training <span class="badge badge-green">✓ Done</span></h3>
-        <p>Built complete Python training pipeline. Trained 9→16→8→2 feedforward network. Exported weights as C++ header for on-device inference.</p>
-        <div class="timeline-details">
-          <div class="timeline-detail">Feature extraction: mean, std deviation, slope per channel over 15-sample window</div>
-          <div class="timeline-detail">Network: 314 parameters, ~1.3KB Flash, &lt;1ms inference at 160MHz</div>
-          <div class="timeline-detail">Achieved 100% training accuracy on collected gesture data</div>
-          <div class="timeline-detail">Weights exported to gesture_model_weights.h for GloveDemoML.ino</div>
-        </div>
-      </div>
-
-      <div class="timeline-item completed">
-        <div class="timeline-date">SPRING 2026</div>
-        <h3>ESP-NOW Wireless Link & Arm Receiver <span class="badge badge-green">✓ Done</span></h3>
-        <p>Implemented bidirectional wireless communication. Arm receiver controls servos based on received gesture packets.</p>
-        <div class="timeline-details">
-          <div class="timeline-detail">ESP-NOW protocol: 11-byte packet, &lt;5ms latency</div>
-          <div class="timeline-detail">ArmReceiver.ino: startup servo self-test, smooth proportional servo control</div>
-          <div class="timeline-detail">New build: PCA9685 I2C servo driver replaces direct GPIO for expansion</div>
-          <div class="timeline-detail">Python virtual dashboard reads machine-readable serial output for presentation</div>
-        </div>
-      </div>
-
-      <div class="timeline-item in-progress">
-        <div class="timeline-date">SPRING 2026 — NOW</div>
-        <h3>Proof-of-Concept Demo Preparation <span class="badge badge-gold">⏳ In Progress</span></h3>
-        <p>Assembling the 4-stage demo guide. Verifying all hardware connections, firmware stability, and Python dashboard on demo machine.</p>
-        <div class="timeline-details">
-          <div class="timeline-detail">4-stage demo: Sensor health check → MATLAB visualization → gesture detection → wireless pipeline</div>
-          <div class="timeline-detail">Single-Xiao fallback mode ready if second board unavailable during demo</div>
-          <div class="timeline-detail">Demo talk track prepared for judges — 5 key talking points</div>
-        </div>
-      </div>
-
-      <div class="timeline-item upcoming">
-        <div class="timeline-date">SPRING 2026 — FINAL</div>
-        <h3>Physical Robotic Arm Assembly <span class="badge" style="background:var(--surface); color:var(--text2); border-color:var(--border2);">Upcoming</span></h3>
-        <p>Assembly of the physical robotic arm with 3 hobby servos. Integration with the arm-side Xiao receiver. End-to-end physical demonstration.</p>
-        <div class="timeline-details">
-          <div class="timeline-detail">3× SG90/MG90S servos — one per finger of the gripper</div>
-          <div class="timeline-detail">External 5V power supply required for servo rail</div>
-          <div class="timeline-detail">Per-finger independent control by expanding ESP-NOW packet</div>
-        </div>
-      </div>
-
-      <div class="timeline-item upcoming">
-        <div class="timeline-date">SPRING 2026 — FINAL</div>
-        <h3>Final Presentation & Report <span class="badge" style="background:var(--surface); color:var(--text2); border-color:var(--border2);">Upcoming</span></h3>
-        <p>Final oral presentation to faculty and judges. Complete written report with ML validation accuracy, system architecture, and future work sections.</p>
-      </div>
-
-    </div>
+  <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:2.5rem;">
+    <span class="badge badge-green">● Completed</span>
+    <span class="badge badge-gold">● In Progress</span>
+    <span class="badge" style="background:var(--surface); color:var(--text2); border-color:var(--border2);">○ Upcoming</span>
   </div>
+
+  <!-- ═══════════════════════════════════════
+       SCROLLING LAYOUT: sticky image + timeline
+  ════════════════════════════════════════ -->
+  <div class="tl-layout">
+
+    <!-- LEFT: sticky image panel -->
+    <div class="tl-img-panel">
+      <div class="tl-img-track">
+
+        <!-- IMAGE 1 — shown at the start / proposal phase -->
+        <div class="tl-img-slide active" data-slide="0">
+          <img src="/images/tl-proposal.png" alt="Project Proposal Phase" class="tl-img">
+          <div class="tl-img-label">
+            <span class="tl-img-phase">Phase 1</span>
+            <span class="tl-img-desc">Initial Proposal & Research</span>
+          </div>
+        </div>
+
+        <!-- IMAGE 2 — glove fabrication -->
+        <div class="tl-img-slide" data-slide="1">
+          <img src="/images/tl-glove-v1.png" alt="First Glove Prototype" class="tl-img">
+          <div class="tl-img-label">
+            <span class="tl-img-phase">Phase 2</span>
+            <span class="tl-img-desc">First Glove Prototype</span>
+          </div>
+        </div>
+
+        <!-- IMAGE 3 — LDC driver + PCB -->
+        <div class="tl-img-slide" data-slide="2">
+          <img src="/images/tl-ldc-pcb.png" alt="LDC1614 PCB Integration" class="tl-img">
+          <div class="tl-img-label">
+            <span class="tl-img-phase">Phase 3</span>
+            <span class="tl-img-desc">LDC1614 Driver & PCB</span>
+          </div>
+        </div>
+
+        <!-- IMAGE 4 — data collection -->
+        <div class="tl-img-slide" data-slide="3">
+          <img src="/images/tl-data.png" alt="Data Collection Sessions" class="tl-img">
+          <div class="tl-img-label">
+            <span class="tl-img-phase">Phase 4</span>
+            <span class="tl-img-desc">Data Collection & Calibration</span>
+          </div>
+        </div>
+
+        <!-- IMAGE 5 — ML training -->
+        <div class="tl-img-slide" data-slide="4">
+          <img src="/images/tl-ml.png" alt="Neural Network Training" class="tl-img">
+          <div class="tl-img-label">
+            <span class="tl-img-phase">Phase 5</span>
+            <span class="tl-img-desc">ML Pipeline & Neural Network</span>
+          </div>
+        </div>
+
+        <!-- IMAGE 6 — wireless link -->
+        <div class="tl-img-slide" data-slide="5">
+          <img src="/images/tl-wireless.png" alt="ESP-NOW Wireless Link" class="tl-img">
+          <div class="tl-img-label">
+            <span class="tl-img-phase">Phase 6</span>
+            <span class="tl-img-desc">ESP-NOW Wireless System</span>
+          </div>
+        </div>
+
+        <!-- IMAGE 7 — demo prep -->
+        <div class="tl-img-slide" data-slide="6">
+          <img src="/images/tl-demo.png" alt="Demo Preparation" class="tl-img">
+          <div class="tl-img-label">
+            <span class="tl-img-phase">Phase 7</span>
+            <span class="tl-img-desc">Proof-of-Concept Demo</span>
+          </div>
+        </div>
+
+        <!-- IMAGE 8 — final prototype -->
+        <div class="tl-img-slide" data-slide="7">
+          <img src="/images/tl-final.png" alt="Final Prototype" class="tl-img">
+          <div class="tl-img-label">
+            <span class="tl-img-phase">Final</span>
+            <span class="tl-img-desc">Complete System — Final Prototype</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: scrollable timeline -->
+    <div class="tl-scroll-col">
+
+      <!-- MILESTONE 1 -->
+      <div class="tl-milestone" data-milestone="0">
+        <div class="tl-dot completed"></div>
+        <div class="tl-milestone-body">
+          <div class="timeline-date">FALL 2025 — EENG 489</div>
+          <h3>Project Proposal & Initial Research <span class="badge badge-green">✓ Done</span></h3>
+          <p>Team formation, project scope definition, literature review on inductive sensing and gesture-controlled robotics. Initial component selection and budget planning.</p>
+          <div class="timeline-details">
+            <div class="timeline-detail">Submitted capstone proposal — Smart Glove for pharmaceutical lab remote control</div>
+            <div class="timeline-detail">Identified LDC1614EVM as the inductance-to-digital converter</div>
+            <div class="timeline-detail">Defined 4 target gestures: Rest, Pinch, Flexion/Extension, Adduction</div>
+            <div class="timeline-detail">Selected Seeed Xiao ESP32-C6 for both glove and arm microcontrollers</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MILESTONE 2 -->
+      <div class="tl-milestone" data-milestone="1">
+        <div class="tl-dot completed"></div>
+        <div class="tl-milestone-body">
+          <div class="timeline-date">FALL 2025 — EENG 489</div>
+          <h3>Glove Fabrication & Sensor Design <span class="badge badge-green">✓ Done</span></h3>
+          <p>Construction of the physical glove with sewn conductive thread coils. Sensor placement based on anatomical joint positions.</p>
+          <div class="timeline-details">
+            <div class="timeline-detail">5 inductive coil sensors sewn: thumb, index, middle, ulnar, wrist crease</div>
+            <div class="timeline-detail">Coil design: 3–5 loops per sensor, ~2mm loop spacing for max inductance</div>
+            <div class="timeline-detail">Sensor placement spans from MCP to DIP joints for full range motion capture</div>
+            <div class="timeline-detail">Tested single-thread vs. stitched multi-segment coils for signal integrity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MILESTONE 3 -->
+      <div class="tl-milestone" data-milestone="2">
+        <div class="tl-dot completed"></div>
+        <div class="tl-milestone-body">
+          <div class="timeline-date">FALL 2025 / SPRING 2026</div>
+          <h3>LDC1614 I2C Driver & PCB Integration <span class="badge badge-green">✓ Done</span></h3>
+          <p>Wrote the low-level I2C driver for the LDC1614EVM. Configured all 4 channels and debugged the CONFIG register issue that caused all-zero outputs.</p>
+          <div class="timeline-details">
+            <div class="timeline-detail">Identified critical CONFIG bug: 0x16 vs 0x14 — solved all-zero channel issue</div>
+            <div class="timeline-detail">All 4 channels reading in 59–63 million counts range at rest</div>
+            <div class="timeline-detail">I2C address confirmed at 0x2A — ADDR pin tied internally to GND on EVM</div>
+            <div class="timeline-detail">Wiring standard: D4/GPIO21 = SDA (blue), D5/GPIO23 = SCL (green)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MILESTONE 4 -->
+      <div class="tl-milestone" data-milestone="3">
+        <div class="tl-dot completed"></div>
+        <div class="tl-milestone-body">
+          <div class="timeline-date">SPRING 2026 — Week 7</div>
+          <h3>Data Collection & Calibration <span class="badge badge-green">✓ Done</span></h3>
+          <p>Systematic collection of REST and PINCH gesture data using sound-cued sessions. Inductor configuration optimized for clean signals.</p>
+          <div class="timeline-details">
+            <div class="timeline-detail">Tested single 470µH inductor per finger → switched to two in series for cleaner data</div>
+            <div class="timeline-detail">REST baselines: Thumb ~4.231MHz, Index ~1.470MHz, Middle ~28.79MHz</div>
+            <div class="timeline-detail">10 sessions × 10 seconds each for both REST and PINCH gestures</div>
+            <div class="timeline-detail">Normalized pinch values: Thumb −0.507, Index −2.060, Middle −2.446</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MILESTONE 5 -->
+      <div class="tl-milestone" data-milestone="4">
+        <div class="tl-dot completed"></div>
+        <div class="tl-milestone-body">
+          <div class="timeline-date">SPRING 2026</div>
+          <h3>ML Pipeline & Neural Network Training <span class="badge badge-green">✓ Done</span></h3>
+          <p>Built complete Python training pipeline. Trained 9→16→8→2 feedforward network. Exported weights as C++ header for on-device inference.</p>
+          <div class="timeline-details">
+            <div class="timeline-detail">Feature extraction: mean, std deviation, slope per channel over 15-sample window</div>
+            <div class="timeline-detail">Network: 314 parameters, ~1.3KB Flash, &lt;1ms inference at 160MHz</div>
+            <div class="timeline-detail">Achieved 100% training accuracy on collected gesture data</div>
+            <div class="timeline-detail">Weights exported to gesture_model_weights.h for GloveDemoML.ino</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MILESTONE 6 -->
+      <div class="tl-milestone" data-milestone="5">
+        <div class="tl-dot completed"></div>
+        <div class="tl-milestone-body">
+          <div class="timeline-date">SPRING 2026</div>
+          <h3>ESP-NOW Wireless Link & Arm Receiver <span class="badge badge-green">✓ Done</span></h3>
+          <p>Implemented wireless communication. Arm receiver controls servos based on received gesture packets.</p>
+          <div class="timeline-details">
+            <div class="timeline-detail">ESP-NOW protocol: 11-byte packet, &lt;5ms latency</div>
+            <div class="timeline-detail">ArmReceiver.ino: startup servo self-test, smooth proportional servo control</div>
+            <div class="timeline-detail">New build: PCA9685 I2C servo driver replaces direct GPIO for expansion</div>
+            <div class="timeline-detail">Python virtual dashboard reads machine-readable serial output for presentation</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MILESTONE 7 -->
+      <div class="tl-milestone" data-milestone="6">
+        <div class="tl-dot in-progress"></div>
+        <div class="tl-milestone-body">
+          <div class="timeline-date">SPRING 2026 — NOW</div>
+          <h3>Proof-of-Concept Demo Preparation <span class="badge badge-gold">⏳ In Progress</span></h3>
+          <p>Assembling the 4-stage demo guide. Verifying all hardware connections, firmware stability, and Python dashboard on demo machine.</p>
+          <div class="timeline-details">
+            <div class="timeline-detail">4-stage demo: Sensor health check → MATLAB visualization → gesture detection → wireless pipeline</div>
+            <div class="timeline-detail">Single-Xiao fallback mode ready if second board unavailable during demo</div>
+            <div class="timeline-detail">Demo talk track prepared for judges — 5 key talking points</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MILESTONE 8 -->
+      <div class="tl-milestone" data-milestone="7">
+        <div class="tl-dot upcoming"></div>
+        <div class="tl-milestone-body">
+          <div class="timeline-date">SPRING 2026 — FINAL</div>
+          <h3>Final Prototype & Presentation <span class="badge" style="background:var(--surface); color:var(--text2); border-color:var(--border2);">Upcoming</span></h3>
+          <p>Full physical robotic arm assembly with 3 servos. End-to-end live demonstration. Final written report and oral presentation to faculty and judges.</p>
+          <div class="timeline-details">
+            <div class="timeline-detail">3× SG90/MG90S servos — one per finger of the gripper</div>
+            <div class="timeline-detail">Per-finger independent control by expanding ESP-NOW packet</div>
+            <div class="timeline-detail">Final report with ML validation accuracy and system architecture</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end .tl-scroll-col -->
+  </div><!-- end .tl-layout -->
+
+</div><!-- end .page-body -->
+
+<script>
+// ── Scroll-triggered image switcher ──────────────────────────
+(function () {
+  const milestones = document.querySelectorAll(".tl-milestone");
+  const slides     = document.querySelectorAll(".tl-img-slide");
+
+  // Show the slide that matches index, hide the rest
+  function showSlide(index) {
+    slides.forEach((s, i) => {
+      s.classList.toggle("active", i === index);
+    });
+  }
+
+  // IntersectionObserver fires when each milestone enters the viewport
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const idx = parseInt(entry.target.dataset.milestone, 10);
+          showSlide(idx);
+        }
+      });
+    },
+    {
+      // Trigger when the milestone is 30% into the viewport
+      threshold: 0.3,
+    }
+  );
+
+  milestones.forEach((m) => observer.observe(m));
+})();
+</script>
 </div>
 <script src="/js/main.js"></script>
 </body>
