@@ -266,65 +266,9 @@
       <div class="wiring-row"><span class="from">CH2 → Servo</span><span class="to">SERVO_MIDDLE_CH</span><span class="note">Middle servo on PCA9685 channel 2</span></div>
     </div>
 
-    <div class="divider"></div>
+    
 
-    <!-- CALIBRATION DATA -->
-    <div class="section-label">Measured Calibration Data</div>
-    <h2 class="section-heading">Sensor Baselines from Lab Sessions</h2>
-    <p style="color:var(--text2); font-size:0.875rem; margin-bottom:1.5rem;">Collected via PCB board using sound-cued sessions. 10 sessions × 10 seconds each for both REST and PINCH.</p>
-    <table class="data-table">
-      <thead>
-        <tr><th>Sensor</th><th>Rest Baseline</th><th>Spread (±)</th><th>Pinch Norm. Value</th><th>Threshold Used</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Thumb (CH0)</td>
-          <td>~4.231 × 10⁶ Hz</td>
-          <td>3.300 × 10⁵ Hz</td>
-          <td>−0.5070</td>
-          <td><code>−0.35</code></td>
-        </tr>
-        <tr>
-          <td>Index (CH1)</td>
-          <td>~1.470 × 10⁶ Hz</td>
-          <td>1.798 × 10⁵ Hz</td>
-          <td>−2.0603</td>
-          <td><code>−1.5</code></td>
-        </tr>
-        <tr>
-          <td>Middle (CH2)</td>
-          <td>~28.79 × 10⁶ Hz</td>
-          <td>2.190 × 10⁵ Hz</td>
-          <td>−2.4459</td>
-          <td><code>−1.8</code></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="alert alert-info" style="margin-top:1.5rem;">
-      <strong>Note on internal oscillator:</strong> With CONFIG = <code>0x1401</code> (internal oscillator mode), typical resting channel values are in the 59–63 million counts range. Values of 10–15 million only appear with an external clock source and are NOT normal for this build. If all channels read 0 or 4294967295, the CONFIG register likely has <code>0x16</code> instead of <code>0x14</code>.
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="section-label">Quick Reference</div>
-    <h2 class="section-heading">Key Parameters</h2>
-    <table class="data-table" style="margin-top:1.5rem;">
-      <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
-      <tbody>
-        <tr><td>LDC1614 I2C Address</td><td><code>0x2A</code></td></tr>
-        <tr><td>CONFIG register</td><td><code>writeConfig(0x2A, 0x1A, 0x14, 0x01)</code> — internal oscillator</td></tr>
-        <tr><td>Error values to filter</td><td><code>4294967295</code> and <code>268435455</code></td></tr>
-        <tr><td>Servo REST angle</td><td>90° (finger open / gripper open)</td></tr>
-        <tr><td>Servo CLOSED angle</td><td>0° (finger bent / gripper closed)</td></tr>
-        <tr><td>Servo PWM frequency</td><td>50 Hz</td></tr>
-        <tr><td>Servo pulse range</td><td>500–2400 µs (covers SG90 / MG90S)</td></tr>
-        <tr><td>Sampling rate</td><td>10 Hz (100ms loop delay)</td></tr>
-        <tr><td>Serial baud rate</td><td>115200</td></tr>
-      </tbody>
-    </table>
-
-  </div>
+    
 </div>
 <script src="/js/main.js"></script>
 </body>
