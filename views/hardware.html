@@ -28,8 +28,7 @@
   <div class="hero-content">
     <div class="eyebrow">Hardware</div>
     <h1 class="page-title">Components,<br>Wiring & Specs</h1>
-    <p class="page-subtitle">Every piece of hardware in the system — from conductive thread coils to the PCA9685 servo driver — with full wiring tables and calibration data.</p>
-  </div>
+<p class="page-subtitle">Every piece of hardware in the system — from conductive thread coils to the H-bridge DC motor driver — with full wiring tables and calibration data.</p>  </div>
 </div>
   <div class="page-body">
 
@@ -85,35 +84,37 @@
   </div>
 
   <!-- ── COMPONENT CARD 4 ── -->
-  <div class="bom-card">
-    <div class="bom-img-wrap">
-      <img src="/images/servo.png" alt="SG90 Servo" class="bom-img">
-    </div>
-    <div class="bom-info">
-      <div class="bom-name">SG90 / MG90S Hobby Servos</div>
-      <div class="bom-meta">
-        <span class="bom-qty">Qty: 3</span>
-        <span class="badge badge-green">In Hand</span>
+<!-- ── COMPONENT CARD 4 ── -->
+      <div class="bom-card">
+        <div class="bom-img-wrap">
+          <!-- Replace dcmotor.png with your actual image filename -->
+          <img src="/images/dcmotor.png" alt="DC Motor" class="bom-img">
+        </div>
+        <div class="bom-info">
+          <div class="bom-name">DC Motors</div>
+          <div class="bom-meta">
+            <span class="bom-qty">Qty: 3</span>
+            <span class="badge badge-green">In Hand</span>
+          </div>
+          <p class="bom-notes">One per finger of the robotic hand. Speed controlled via PWM signal from the H-bridge. Direction controlled by H-bridge logic pins.</p>
+        </div>
       </div>
-      <p class="bom-notes">One per finger. 4.8–6V, 50Hz PWM, 500–2400µs pulse range. External 5V power required.</p>
-    </div>
-  </div>
 
-  <!-- ── COMPONENT CARD 5 ── -->
-  <div class="bom-card">
-    <div class="bom-img-wrap">
-      <img src="/images/driver.png" alt="PCA9685 PWM Driver" class="bom-img">
-    </div>
-    <div class="bom-info">
-      <div class="bom-name">PCA9685 PWM Driver</div>
-      <div class="bom-meta">
-        <span class="bom-qty">Qty: 1</span>
-        <span class="badge badge-green">In Hand</span>
+<!-- ── COMPONENT CARD 5 ── -->
+      <div class="bom-card">
+        <div class="bom-img-wrap">
+          <!-- Replace hbridge.png with your actual image filename -->
+          <img src="/images/hbridge.jpg" alt="H-Bridge Motor Driver" class="bom-img">
+        </div>
+        <div class="bom-info">
+          <div class="bom-name">H-Bridge Motor Driver</div>
+          <div class="bom-meta">
+            <span class="bom-qty">Qty: 1</span>
+            <span class="badge badge-green">In Hand</span>
+          </div>
+          <p class="bom-notes">Controls direction and speed of each DC motor. PWM input from Arm Xiao sets motor speed proportional to pinch intensity. Logic pins set rotation direction — forward to close, reverse to open fingers.</p>
+        </div>
       </div>
-      <p class="bom-notes">I2C servo controller at address 0x40. 16 PWM channels. Used in new arm build for cleaner servo control.</p>
-    </div>
-  </div>
-
   <!-- ── COMPONENT CARD 6 ── -->
   <div class="bom-card">
     <div class="bom-img-wrap">
@@ -250,13 +251,15 @@
       <div class="wiring-row"><span class="from">Channel 2 (CH2)</span><span class="to">IN2A / IN2B</span><span class="note">Middle finger coil</span></div>
     </div>
     <div class="hw-spec-group">
-      <div class="hw-spec-header">🟢  PCA9685 I2C Servo Driver</div>
+      <div class="hw-spec-header">🟢  MX1508 L298N Mini 2 Channel DC motor driver </div>
       <div class="wiring-row" style="font-family:var(--font-mono); font-size:0.65rem; color:var(--text3); letter-spacing:0.1em; padding:0.5rem 1.6rem; background:var(--surface2);">
         <span>ARM XIAO</span><span>PCA9685</span><span>NOTES</span>
       </div>
-      <div class="wiring-row"><span class="from">3V3</span><span class="to">VCC</span><span class="note">3.3V logic power</span></div>
+      <div class="wiring-row"><span class="from">12V</span><span class="to">VCC</span><span class="note">12V coming from power supply</span></div>
       <div class="wiring-row"><span class="from">GND</span><span class="to">GND</span><span class="note">Common ground</span></div>
-      <div class="wiring-row"><span class="from">D4 / SDA</span><span class="to">SDA</span><span class="note">I2C data — address 0x40</span></div>
+      <div class="wiring-row"><span class="from">D0 & D1</span><span class="to">IN1 & IN2 </span><span class="note">Thumb motor control</span></div>
+      <div class="wiring-row"><span class="from">D2 & D3</span><span class="to">IN3 & IN4 </span><span class="note">Index motor control</span></div>
+      <div class="wiring-row"><span class="from">D10 & D9</span><span class="to">IN1 & IN2(Second HBridge) </span><span class="note">Middle motor control</span></div>
       <div class="wiring-row"><span class="from">D5 / SCL</span><span class="to">SCL</span><span class="note">I2C clock — setPWMFreq(50) required</span></div>
       <div class="wiring-row"><span class="from">CH0 → Servo</span><span class="to">SERVO_THUMB_CH</span><span class="note">Thumb servo on PCA9685 channel 0</span></div>
       <div class="wiring-row"><span class="from">CH1 → Servo</span><span class="to">SERVO_INDEX_CH</span><span class="note">Index servo on PCA9685 channel 1</span></div>
