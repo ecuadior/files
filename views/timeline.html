@@ -208,43 +208,50 @@
         <div class="tl-dot completed"></div>
         <div class="tl-milestone-body">
           <div class="timeline-date">SPRING 2026</div>
-          <h3>ESP-NOW Wireless Link & Arm Receiver <span class="badge badge-green">✓ Done</span></h3>
-          <p>Implemented wireless communication. Arm receiver controls servos based on received gesture packets.</p>
+          <h3>ESP-NOW Wireless Link & Motor-Based Arm Receiver <span class="badge badge-green">✓ Done</span></h3>
+          <p>Replaced servo-based arm control with DC motors driven by an H-bridge. Motors provide significantly more torque than hobby servos, making them better suited to physically moving the robotic finger mechanisms under load. The arm receiver firmware was rewritten to control motor speed via PWM and direction via H-bridge logic pins.</p>
           <div class="timeline-details">
-            <div class="timeline-detail">ESP-NOW protocol: 11-byte packet, &lt;5ms latency</div>
-            <div class="timeline-detail">ArmReceiver.ino: startup servo self-test, smooth proportional servo control</div>
-            <div class="timeline-detail">New build: PCA9685 I2C servo driver replaces direct GPIO for expansion</div>
-            <div class="timeline-detail">Python virtual dashboard reads machine-readable serial output for presentation</div>
+            <div class="timeline-detail">ESP-NOW protocol retained: 11-byte packet, &lt;5ms latency, gesture + intensity + raw channel values</div>
+            <div class="timeline-detail">Switched from PCA9685 servo driver to H-bridge motor driver — better torque for finger actuation</div>
+            <div class="timeline-detail">DC motors chosen over servos: higher torque output, simpler mechanical coupling to finger tendons</div>
+            <div class="timeline-detail">PWM duty cycle maps pinch intensity 0–100% directly to motor speed 0–255</div>
+            <div class="timeline-detail">H-bridge direction pins set FORWARD on PINCH, REVERSE on REST to open fingers back to position</div>
+            <div class="timeline-detail">Deadband control prevents motor jitter when pinch intensity is held steady at a grip</div>
           </div>
         </div>
       </div>
 
       <!-- MILESTONE 7 -->
       <div class="tl-milestone" data-milestone="6">
-        <div class="tl-dot in-progress"></div>
+        <div class="tl-dot completed"></div>
         <div class="tl-milestone-body">
-          <div class="timeline-date">SPRING 2026 — NOW</div>
-          <h3>Proof-of-Concept Demo Preparation <span class="badge badge-gold">⏳ In Progress</span></h3>
-          <p>Assembling the 4-stage demo guide. Verifying all hardware connections, firmware stability, and Python dashboard on demo machine.</p>
+          <div class="timeline-date">SPRING 2026 — MARCH 2026</div>
+          <h3>Dual-Phase Calibration Firmware (GloveDemoV3) <span class="badge badge-green">✓ Done</span></h3>
+          <p>Upgraded the glove firmware from a fixed-threshold system to a two-phase personal calibration system. The old approach used hardcoded count values that had to be manually re-tuned for each user and glove position. The new system adapts automatically to the user's actual hand range at every startup — no code changes required between users.</p>
           <div class="timeline-details">
-            <div class="timeline-detail">4-stage demo: Sensor health check → MATLAB visualization → gesture detection → wireless pipeline</div>
-            <div class="timeline-detail">Single-Xiao fallback mode ready if second board unavailable during demo</div>
-            <div class="timeline-detail">Demo talk track prepared for judges — 5 key talking points</div>
+            <div class="timeline-detail">Phase 1 — Rest: 100 samples over 10 seconds with hand open and flat. Captures resting inductance baseline per channel.</div>
+            <div class="timeline-detail">Phase 2 — Pinch: 100 samples over 10 seconds at full hard pinch. Records peak delta per channel as the personal grip range.</div>
+            <div class="timeline-detail">Detection threshold automatically set to 25% of measured peak delta — adapts to every user and glove fit</div>
+            <div class="timeline-detail">Intensity now scaled to personal peak: 0% = rest baseline, 100% = your full squeeze. No hardcoded numbers.</div>
+            <div class="timeline-detail">Serial Monitor prints both calibration summaries so results can be verified before the demo begins</div>
+            <div class="timeline-detail">Calibration failure detection: if fewer than 10 valid samples are captured, firmware halts and reports the wiring issue</div>
           </div>
         </div>
       </div>
 
       <!-- MILESTONE 8 -->
       <div class="tl-milestone" data-milestone="7">
-        <div class="tl-dot upcoming"></div>
+        <div class="tl-dot completed"></div>
         <div class="tl-milestone-body">
           <div class="timeline-date">SPRING 2026 — FINAL</div>
-          <h3>Final Prototype & Presentation <span class="badge" style="background:var(--surface); color:var(--text2); border-color:var(--border2);">Upcoming</span></h3>
-          <p>Full physical robotic arm assembly with 3 servos. End-to-end live demonstration. Final written report and oral presentation to faculty and judges.</p>
+          <h3>Final Prototype & Presentation <span class="badge badge-gold">⏳ In Progress</span></h3>
+          <p>Full physical robotic arm assembly with 3 DC motors controlled by the H-bridge receiver. End-to-end live demonstration with both calibration phases, wireless gesture transmission, and proportional motor-driven finger movement. Final written report and oral presentation to faculty and judges.</p>
           <div class="timeline-details">
-            <div class="timeline-detail">3× SG90/MG90S servos — one per finger of the gripper</div>
-            <div class="timeline-detail">Per-finger independent control by expanding ESP-NOW packet</div>
-            <div class="timeline-detail">Final report with ML validation accuracy and system architecture</div>
+            <div class="timeline-detail">3× DC motors — one per finger, selected for torque advantage over hobby servos in finger tendon actuation</div>
+            <div class="timeline-detail">H-bridge motor driver controls speed via PWM and direction via logic pins from the Arm Xiao</div>
+            <div class="timeline-detail">Full demo flow: dual-phase calibration → live gesture detection → ESP-NOW transmission → motor response</div>
+            <div class="timeline-detail">Final report to include ML validation accuracy, system architecture, and calibration methodology</div>
+            <div class="timeline-detail">Oral presentation to NYIT faculty and senior design judges — Spring 2026</div>
           </div>
         </div>
       </div>

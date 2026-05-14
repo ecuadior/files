@@ -26,8 +26,7 @@
 <div class="page-hero">
     <div class="eyebrow">System Pipeline</div>
     <h1 class="page-title">Data Flow:<br>Bend to Move</h1>
-    <p class="page-subtitle">Every step from a finger bending to a servo responding — hardware, firmware, wireless protocol, and gesture logic explained.</p>
-  </div>
+<p class="page-subtitle">Every step from a finger bending to a DC motor responding — hardware, firmware, wireless protocol, and gesture logic explained.</p>  </div>
   <div class="page-body">
 
     <div class="grid-2" style="margin-top:0; gap:3rem;">
@@ -62,11 +61,18 @@
               <p>11-byte packet sent to arm Xiao MAC address. Contains gesture (REST/PINCH), intensity (0–100%), and raw CH0/CH1/CH2 values. Latency under 5ms. Both boards must be on the same WiFi channel.</p>
             </div>
           </div>
-          <div class="pipe-step">
+         <div class="pipe-step">
             <div class="pipe-icon">🔵</div>
             <div class="pipe-content">
-              <h3>Arm Xiao — Servo Control</h3>
-              <p>Maps intensity to servo angle: 0% = 90° open, 100% = 0° closed. Smooth 1°/4ms steps prevent stall/jerk. LED blinks on each received packet. Prints machine-readable line for Python dashboard.</p>
+              <h3>Arm Xiao — Motor Control</h3>
+              <p>Maps pinch intensity (0–100%) to a PWM duty cycle sent to the H-bridge. Direction pins set to CLOSE on PINCH, OPEN on REST. LED blinks on each received packet. Prints machine-readable line for Python dashboard.</p>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon">⚙️</div>
+            <div class="pipe-content">
+              <h3>H-Bridge + DC Motors</h3>
+              <p>H-bridge receives PWM speed signal and direction bits from the Arm Xiao. Three DC motors drive the robotic fingers proportionally — higher pinch intensity = faster motor = tighter grip. Reversing direction pins opens the fingers back to rest position.</p>
             </div>
           </div>
           <div class="pipe-step">
@@ -108,17 +114,21 @@ d2 = CH2 − rest_2   <span class="cmt">// Middle delta</span></div>
 <span class="kw">if</span> abs(d2) > <span class="num">2,000,000</span> → bent++
 <span class="kw">if</span> bent >= <span class="num">2</span> → <span class="def">PINCH DETECTED</span></div>
           </div>
-          <div class="card">
-            <h3>Step 4 — Intensity → Servo Angle</h3>
-            <p style="margin-bottom:0.8rem;">Continuous proportional control for smooth gripper motion.</p>
+         <div class="card">
+            <h3>Step 4 — Intensity → Motor Speed</h3>
+            <p style="margin-bottom:0.8rem;">Continuous proportional control — pinch harder, motors spin faster, grip tightens.</p>
             <div class="code-block" style="font-size:0.72rem;">
 avgDelta = (|d0| + |d1| + |d2|) / 3
 intensity = avgDelta × 100 / sum_of_thresholds
 
-<span class="cmt">// Map to servo angle:</span>
-angle = map(intensity, 0, 100, 90°, 0°)
-<span class="cmt">// 0% pinch = 90° open</span>
-<span class="cmt">// 100% pinch = 0° closed</span></div>
+<span class="cmt">// Map to PWM duty cycle:</span>
+pwm_speed = map(intensity, 0, 100, 0, 255)
+<span class="cmt">// 0%   pinch = 0 PWM   → motor stopped</span>
+<span class="cmt">// 100% pinch = 255 PWM → full speed close</span>
+
+<span class="cmt">// Direction control:</span>
+<span class="cmt">// PINCH → IN1=HIGH, IN2=LOW  (close)</span>
+<span class="cmt">// REST  → IN1=LOW,  IN2=HIGH (open)</span></div>
           </div>
         </div>
 
@@ -138,14 +148,14 @@ angle = map(intensity, 0, 100, 90°, 0°)
         </div>
 
         <div style="margin-top:1.5rem;">
-          <div class="section-label">Servo Response Table</div>
+          <div class="section-label">Motor Response Table</div>
           <table class="data-table" style="margin-top:0.5rem;">
-            <thead><tr><th>Hand State</th><th>Gesture Output</th><th>Servo Angle</th></tr></thead>
+            <thead><tr><th>Hand State</th><th>Gesture Output</th><th>PWM Speed</th><th>Direction</th></tr></thead>
             <tbody>
-              <tr><td>Fully open</td><td><span class="badge badge-blue">REST · 0%</span></td><td><code>90°</code> open</td></tr>
-              <tr><td>Light pinch</td><td><span class="badge badge-green">PINCH · 30%</span></td><td><code>~63°</code> partial</td></tr>
-              <tr><td>Medium pinch</td><td><span class="badge badge-green">PINCH · 60%</span></td><td><code>~36°</code></td></tr>
-              <tr><td>Full pinch</td><td><span class="badge badge-orange">PINCH · 100%</span></td><td><code>0°</code> closed</td></tr>
+              <tr><td>Fully open</td><td><span class="badge badge-blue">REST · 0%</span></td><td><code>0 / 255</code> stopped</td><td>Open (reverse)</td></tr>
+              <tr><td>Light pinch</td><td><span class="badge badge-green">PINCH · 30%</span></td><td><code>~76 / 255</code></td><td>Close (forward)</td></tr>
+              <tr><td>Medium pinch</td><td><span class="badge badge-green">PINCH · 60%</span></td><td><code>~153 / 255</code></td><td>Close (forward)</td></tr>
+              <tr><td>Full pinch</td><td><span class="badge badge-orange">PINCH · 100%</span></td><td><code>255 / 255</code> full</td><td>Close (forward)</td></tr>
             </tbody>
           </table>
         </div>
